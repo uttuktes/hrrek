@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Formulir Evaluasi Kinerja</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-gray-100">
+
+  <div class="py-6 px-4 sm:px-6 lg:px-8">
+    <div class="w-full mx-auto px-4 form-container card-hover overflow-hidden p-4 max-w-full bg-white rounded shadow">
+      <div class="text-center mb-4">
+        <h2 class="text-lg font-semibold">FORMULIR EVALUASI KINERJA</h2>
+      </div>
+
+      <!-- Dropdown -->
+      <div class="space-y-3">
+        <label>Masa Penilaian</label>
+        <select id="evaluationPeriod" class="border rounded w-full p-2">
+          <option value="">Pilih</option>
+          <option value="Jan - Apr">Jan - Apr</option>
+          <option value="Mei - Ags">Mei - Ags</option>
+          <option value="Sept - Des">Sept - Des</option>
+        </select>
+
+        <label>Departemen</label>
+        <select id="department" class="border rounded w-full p-2">
+          <option value="">Pilih Departemen</option>
+        </select>
+
+        <label>Atasan</label>
+        <select id="manager" class="border rounded w-full p-2" disabled>
+          <option value="">Pilih Atasan</option>
+        </select>
+
+        <label>Karyawan</label>
+        <select id="employee" class="border rounded w-full p-2" disabled>
+          <option value="">Pilih Karyawan</option>
+        </select>
+      </div>
+
+      <!-- Rating -->
+      <div class="mt-4 space-y-2">
+        <h3 class="font-medium">Penilaian :</h3>
+        <div id="ratings"></div>
+      </div>
+
+      <!-- Notes -->
+      <textarea id="notes" rows="3" placeholder="Catatan tambahan..." class="w-full border p-2 rounded mt-3"></textarea>
+
+      <div class="flex justify-end mt-3">
+        <button id="submitBtn" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">
+          Submit
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div id="successModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+    <div class="bg-white p-6 rounded">
+      <p class="text-center">✅ Data berhasil disimpan!</p>
+      <div class="text-center mt-3">
+        <button id="closeModal" class="bg-blue-600 text-white px-4 py-2 rounded">Tutup</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API_URL = "https://script.google.com/macros/s/AKfycbzh9QMR3JBZwsqt-LESnMGVMbkdKrFzXte-muT6TTG7pTj6sj8hPdbF6BQBCPLr7MAc/exec"; // URL Web App
+
+    // Generate 8 pertanyaan rating
+    const ratingContainer = document.getElementById("ratings");
+    const pertanyaan = [
+      "Disiplin dalam pekerjaan",
+      "Trampil mengerjakan tugas",
+      "Sigap dalam pekerjaan",
+      "Fokus / tidak mengobrol berlebihan",
+      "Kerjasama dengan rekan kerja",
+      "Patuh pada atasan",
+      "Menjaga kebersihan & area kerja",
+      "Memahami bekerja adalah ibadah"
+    ];
+    pertanyaan.forEach((p, i) => {
+      const div = document.createElement("div");
+      div.innerHTML = `<p class="text-sm">${i+1}. ${p}</p>` +
+        [1,2,3,4,5].map(v => `<label class="mr-2"><input type="radio" name="rating${i+1}" value="${v}"> ${v}</label>`).join("");
+      ratingContainer.appendChild(div);
+    });
+
+    // Load departemen data dari API
+    fetch(API_URL)
+      .then(res => res.json())
+      .then(data => {
+        const deptSel = document.getElementById("department");
+        Object.keys(data).sort().forEach(d => {
+          deptSel.innerHTML += `<option value="${d}">${d}</option>`;
+        });
+
+        deptSel.addEventListener("change", () => {
+          const manSel = document.getElementById("manager");
+          const empSel = document.getElementById("employee");
+          manSel.innerHTML = `<option value="">Pilih Atasan</option>`;
+          empSel.innerHTML = `<option value="">Pilih Karyawan</option>`;
+          empSel.disabled = true;
+
+          if (deptSel.value) {
+            Object.keys(data[deptSel.value]).forEach(m => {
+              manSel.innerHTML += `<option value="${m}">${m}</option>`;
+            });
+            manSel.disabled = false;
+          }
+        });
+
+        document.getElementById("manager").addEventListener("change", e => {
+          const dept = deptSel.value;
+          const man = e.target.value;
+          const empSel = document.getElementById("employee");
+          empSel.innerHTML = `<option value="">Pilih Karyawan</option>`;
+          if (man) {
+            data[dept][man].forEach(emp => {
+              empSel.innerHTML += `<option value="${emp}">${emp}</option>`;
+            });
+            empSel.disabled = false;
+          }
+        });
+      });
+
+    // Submit
+    document.getElementById("submitBtn").addEventListener("click", async (e) => {
+      e.preventDefault();
+      const evaluationPeriod = document.getElementById("evaluationPeriod").value;
+      const department = document.getElementById("department").value;
+      const manager = document.getElementById("manager").value;
+      const employee = document.getElementById("employee").value;
+      const notes = document.getElementById("notes").value;
+
+      const ratings = [];
+      for (let i=1; i<=8; i++) {
+        const r = document.querySelector(`input[name="rating${i}"]:checked`);
+        if (!r) return alert(`Isi pertanyaan ${i} dulu`);
+        ratings.push(r.value);
+      }
+
+      const payload = { evaluationPeriod, department, manager, employee, ratings, notes };
+
+      try {
+        const res = await fetch(API_URL, { method:"POST", body: JSON.stringify(payload) });
+        const result = await res.json();
+        if (result.status === "success") {
+          document.getElementById("successModal").classList.remove("hidden");
+        } else {
+          alert("Error: " + result.message);
+        }
+      } catch(err) {
+        alert("Gagal kirim: " + err);
+      }
+    });
+
+    // Tutup modal
+    document.getElementById("closeModal").addEventListener("click", () => {
+      document.getElementById("successModal").classList.add("hidden");
+    });
+  </script>
+</body>
+</html>
