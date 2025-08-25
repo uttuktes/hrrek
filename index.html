@@ -7,10 +7,10 @@
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100">
-  <div class="max-w-3xl mx-auto bg-white p-8 shadow-lg rounded-lg mt-10">
-    <h2 class="text-xl font-bold mb-4 text-center">FORMULIR EVALUASI KINERJA</h2>
+  <div class="max-w-4xl mx-auto bg-white p-8 shadow-lg rounded-lg mt-10">
+    <h2 class="text-2xl font-bold mb-6 text-center">FORMULIR EVALUASI KINERJA</h2>
 
-    <form id="evaluationForm" class="space-y-4">
+    <form id="evaluationForm" class="space-y-6">
       <!-- Periode -->
       <div>
         <label class="block font-semibold">Masa Penilaian</label>
@@ -48,45 +48,111 @@
 
       <!-- Pertanyaan -->
       <div>
-        <p class="font-semibold">Penilaian :</p>
+        <p class="font-semibold mb-2">Penilaian (1 = sangat kurang, 5 = sangat baik)</p>
 
-        <label>1. Disiplin dalam pekerjaan</label>
-        <div>
-          <input type="radio" name="q1" value="1" required> 1
-          <input type="radio" name="q1" value="2"> 2
-          <input type="radio" name="q1" value="3"> 3
-          <input type="radio" name="q1" value="4"> 4
-          <input type="radio" name="q1" value="5"> 5
-        </div>
+        <!-- Loop pertanyaan -->
+        <div class="space-y-3">
+          <div>
+            <label>1. Disiplin dalam pekerjaan</label><br>
+            <input type="radio" name="q1" value="1" required>1
+            <input type="radio" name="q1" value="2">2
+            <input type="radio" name="q1" value="3">3
+            <input type="radio" name="q1" value="4">4
+            <input type="radio" name="q1" value="5">5
+          </div>
 
-        <label>2. Trampil mengerjakan tugas</label>
-        <div>
-          <input type="radio" name="q2" value="1" required> 1
-          <input type="radio" name="q2" value="2"> 2
-          <input type="radio" name="q2" value="3"> 3
-          <input type="radio" name="q2" value="4"> 4
-          <input type="radio" name="q2" value="5"> 5
-        </div>
+          <div>
+            <label>2. Trampil mengerjakan tugas</label><br>
+            <input type="radio" name="q2" value="1" required>1
+            <input type="radio" name="q2" value="2">2
+            <input type="radio" name="q2" value="3">3
+            <input type="radio" name="q2" value="4">4
+            <input type="radio" name="q2" value="5">5
+          </div>
 
-        <label>3. Sigap dalam pekerjaan</label>
-        <div>
-          <input type="radio" name="q3" value="1" required> 1
-          <input type="radio" name="q3" value="2"> 2
-          <input type="radio" name="q3" value="3"> 3
-          <input type="radio" name="q3" value="4"> 4
-          <input type="radio" name="q3" value="5"> 5
+          <div>
+            <label>3. Sigap dalam pekerjaan</label><br>
+            <input type="radio" name="q3" value="1" required>1
+            <input type="radio" name="q3" value="2">2
+            <input type="radio" name="q3" value="3">3
+            <input type="radio" name="q3" value="4">4
+            <input type="radio" name="q3" value="5">5
+          </div>
+
+          <div>
+            <label>4. Tanggung jawab terhadap pekerjaan</label><br>
+            <input type="radio" name="q4" value="1" required>1
+            <input type="radio" name="q4" value="2">2
+            <input type="radio" name="q4" value="3">3
+            <input type="radio" name="q4" value="4">4
+            <input type="radio" name="q4" value="5">5
+          </div>
+
+          <div>
+            <label>5. Kerjasama dengan rekan kerja</label><br>
+            <input type="radio" name="q5" value="1" required>1
+            <input type="radio" name="q5" value="2">2
+            <input type="radio" name="q5" value="3">3
+            <input type="radio" name="q5" value="4">4
+            <input type="radio" name="q5" value="5">5
+          </div>
+
+          <div>
+            <label>6. Inisiatif dalam pekerjaan</label><br>
+            <input type="radio" name="q6" value="1" required>1
+            <input type="radio" name="q6" value="2">2
+            <input type="radio" name="q6" value="3">3
+            <input type="radio" name="q6" value="4">4
+            <input type="radio" name="q6" value="5">5
+          </div>
+
+          <div>
+            <label>7. Kreativitas</label><br>
+            <input type="radio" name="q7" value="1" required>1
+            <input type="radio" name="q7" value="2">2
+            <input type="radio" name="q7" value="3">3
+            <input type="radio" name="q7" value="4">4
+            <input type="radio" name="q7" value="5">5
+          </div>
+
+          <div>
+            <label>8. Komunikasi</label><br>
+            <input type="radio" name="q8" value="1" required>1
+            <input type="radio" name="q8" value="2">2
+            <input type="radio" name="q8" value="3">3
+            <input type="radio" name="q8" value="4">4
+            <input type="radio" name="q8" value="5">5
+          </div>
+
+          <div>
+            <label>9. Kepemimpinan</label><br>
+            <input type="radio" name="q9" value="1" required>1
+            <input type="radio" name="q9" value="2">2
+            <input type="radio" name="q9" value="3">3
+            <input type="radio" name="q9" value="4">4
+            <input type="radio" name="q9" value="5">5
+          </div>
+
+          <div>
+            <label>10. Loyalitas</label><br>
+            <input type="radio" name="q10" value="1" required>1
+            <input type="radio" name="q10" value="2">2
+            <input type="radio" name="q10" value="3">3
+            <input type="radio" name="q10" value="4">4
+            <input type="radio" name="q10" value="5">5
+          </div>
         </div>
       </div>
 
-      <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded">
+      <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded">
         Submit
       </button>
     </form>
   </div>
 
   <script>
-    // Ganti dengan URL Web App Apps Script kamu (deploy latest version)
-    const API_URL = "https://script.google.com/macros/s/AKfycby8zlhbnzmbdouxJKHHWXDJLpG-265PKlQEc9exl4OGKQBesLO_bqPnGz_ocE70J504/exec";
+    // Ganti dengan URL WebApp Apps Script kamu (deploy latest version)
+    const API_URL = "https://script.google.com/macros/s/AKfycbwaDZWkgZKXt0sFfbC5bvKiuay8lvFF9WDgD8hGue8bjdG3YP0paYoct-faF9FkDryj/exec";
 
     let formData = {};
 
@@ -152,7 +218,14 @@
         employee: form.employee.value,
         q1: form.q1.value,
         q2: form.q2.value,
-        q3: form.q3.value
+        q3: form.q3.value,
+        q4: form.q4.value,
+        q5: form.q5.value,
+        q6: form.q6.value,
+        q7: form.q7.value,
+        q8: form.q8.value,
+        q9: form.q9.value,
+        q10: form.q10.value
       };
 
       try {
