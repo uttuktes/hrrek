@@ -1,3 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Formulir Evaluasi Kinerja</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-gray-100">
+
+  <div class="py-6 px-4 sm:px-6 lg:px-8">
+    <div class="w-full mx-auto px-4 form-container card-hover overflow-hidden p-4 max-w-full bg-white rounded shadow">
+      <div class="text-center mb-4">
+        <h2 class="text-lg font-semibold">FORMULIR EVALUASI KINERJA</h2>
+      </div>
+
+      <!-- Dropdown -->
+      <div class="space-y-3">
+        <label>Masa Penilaian</label>
+        <select id="evaluationPeriod" class="border rounded w-full p-2">
+          <option value="">Pilih</option>
+          <option value="Jan - Apr">Jan - Apr</option>
+          <option value="Mei - Ags">Mei - Ags</option>
+          <option value="Sept - Des">Sept - Des</option>
+        </select>
+
+        <label>Departemen</label>
+        <select id="department" class="border rounded w-full p-2">
+          <option value="">Pilih Departemen</option>
+        </select>
+
+        <label>Atasan</label>
+        <select id="manager" class="border rounded w-full p-2" disabled>
+          <option value="">Pilih Atasan</option>
+        </select>
+
+        <label>Karyawan</label>
+        <select id="employee" class="border rounded w-full p-2" disabled>
+          <option value="">Pilih Karyawan</option>
+        </select>
+      </div>
+
+      <!-- Rating -->
+      <div class="mt-4 space-y-2">
+        <h3 class="font-medium">Penilaian :</h3>
+        <div id="ratings"></div>
+      </div>
+
+      <!-- Notes -->
+      <textarea id="notes" rows="3" placeholder="Catatan tambahan..." class="w-full border p-2 rounded mt-3"></textarea>
+
+      <div class="flex justify-end mt-3">
+        <button id="submitBtn" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">
+          Submit
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div id="successModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+    <div class="bg-white p-6 rounded">
+      <p class="text-center">✅ Data berhasil disimpan!</p>
+      <div class="text-center mt-3">
+        <button id="closeModal" class="bg-blue-600 text-white px-4 py-2 rounded">Tutup</button>
+      </div>
+    </div>
+  </div>
+
 <script>
 const API_URL = "https://script.google.com/macros/s/AKfycby8zlhbnzmbdouxJKHHWXDJLpG-265PKlQEc9exl4OGKQBesLO_bqPnGz_ocE70J504/exec";
 let formData = {};
@@ -49,3 +117,4 @@ function getDataJSONP() {
 }
 window.onload = getDataJSONP;
 </script>
+
