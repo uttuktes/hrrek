@@ -1,120 +1,139 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
   <meta charset="UTF-8">
-  <title>Formulir Evaluasi Kinerja</title>
+  <title>FORMULIR EVALUASI KINERJA</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="min-h-screen bg-gray-100">
+<body class="bg-gray-100 p-6">
+  <div class="max-w-3xl mx-auto bg-white p-6 rounded-2xl shadow">
+    <h2 class="text-xl font-bold text-center mb-6">FORMULIR EVALUASI KINERJA</h2>
 
-  <div class="py-6 px-4 sm:px-6 lg:px-8">
-    <div class="w-full mx-auto px-4 form-container card-hover overflow-hidden p-4 max-w-full bg-white rounded shadow">
-      <div class="text-center mb-4">
-        <h2 class="text-lg font-semibold">FORMULIR EVALUASI KINERJA</h2>
+    <form id="evaluationForm" class="space-y-4">
+      <div>
+        <label class="block font-semibold">Masa Penilaian</label>
+        <select id="periode" name="periode" class="border rounded w-full p-2">
+          <option value="Jan - Apr">Jan - Apr</option>
+          <option value="Mei - Agu">Mei - Agu</option>
+          <option value="Sep - Des">Sep - Des</option>
+        </select>
       </div>
 
-      <!-- Dropdown -->
-      <div class="space-y-3">
-        <label>Masa Penilaian</label>
-        <select id="evaluationPeriod" class="border rounded w-full p-2">
-          <option value="">Pilih</option>
-          <option value="Jan - Apr">Jan - Apr</option>
-          <option value="Mei - Ags">Mei - Ags</option>
-          <option value="Sept - Des">Sept - Des</option>
-        </select>
-
-        <label>Departemen</label>
-        <select id="department" class="border rounded w-full p-2">
+      <div>
+        <label class="block font-semibold">Departemen</label>
+        <select id="department" name="department" class="border rounded w-full p-2">
           <option value="">Pilih Departemen</option>
         </select>
+      </div>
 
-        <label>Atasan</label>
-        <select id="manager" class="border rounded w-full p-2" disabled>
+      <div>
+        <label class="block font-semibold">Atasan</label>
+        <select id="manager" name="manager" class="border rounded w-full p-2" disabled>
           <option value="">Pilih Atasan</option>
         </select>
+      </div>
 
-        <label>Karyawan</label>
-        <select id="employee" class="border rounded w-full p-2" disabled>
+      <div>
+        <label class="block font-semibold">Karyawan</label>
+        <select id="employee" name="employee" class="border rounded w-full p-2" disabled>
           <option value="">Pilih Karyawan</option>
         </select>
       </div>
 
-      <!-- Rating -->
-      <div class="mt-4 space-y-2">
-        <h3 class="font-medium">Penilaian :</h3>
-        <div id="ratings"></div>
+      <div>
+        <p class="font-bold">Penilaian :</p>
+        <div class="space-y-2">
+          <label>1. Disiplin dalam pekerjaan</label><br>
+          <input type="radio" name="q1" value="1">1
+          <input type="radio" name="q1" value="2">2
+          <input type="radio" name="q1" value="3">3
+          <input type="radio" name="q1" value="4">4
+          <input type="radio" name="q1" value="5">5
+        </div>
+        <div class="space-y-2">
+          <label>2. Trampil mengerjakan tugas</label><br>
+          <input type="radio" name="q2" value="1">1
+          <input type="radio" name="q2" value="2">2
+          <input type="radio" name="q2" value="3">3
+          <input type="radio" name="q2" value="4">4
+          <input type="radio" name="q2" value="5">5
+        </div>
+        <div class="space-y-2">
+          <label>3. Sigap dalam pekerjaan</label><br>
+          <input type="radio" name="q3" value="1">1
+          <input type="radio" name="q3" value="2">2
+          <input type="radio" name="q3" value="3">3
+          <input type="radio" name="q3" value="4">4
+          <input type="radio" name="q3" value="5">5
+        </div>
       </div>
 
-      <!-- Notes -->
-      <textarea id="notes" rows="3" placeholder="Catatan tambahan..." class="w-full border p-2 rounded mt-3"></textarea>
-
-      <div class="flex justify-end mt-3">
-        <button id="submitBtn" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">
-          Submit
-        </button>
-      </div>
-    </div>
+      <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded">Kirim</button>
+    </form>
   </div>
 
-  <!-- Modal -->
-  <div id="successModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-    <div class="bg-white p-6 rounded">
-      <p class="text-center">✅ Data berhasil disimpan!</p>
-      <div class="text-center mt-3">
-        <button id="closeModal" class="bg-blue-600 text-white px-4 py-2 rounded">Tutup</button>
-      </div>
-    </div>
-  </div>
+  <script>
+    // Ganti URL ini dengan URL deploy Apps Script kamu
+    const API_URL = "https://script.google.com/macros/s/AKfycby8zlhbnzmbdouxJKHHWXDJLpG-265PKlQEc9exl4OGKQBesLO_bqPnGz_ocE70J504/exec";
+    let formData = {};
 
-<script>
-const API_URL = "https://script.google.com/macros/s/AKfycby8zlhbnzmbdouxJKHHWXDJLpG-265PKlQEc9exl4OGKQBesLO_bqPnGz_ocE70J504/exec";
-let formData = {};
+    // callback dari JSONP
+    function loadData(data) {
+      formData = data;
+      console.log("Data dari Apps Script:", data);
 
-// callback dari JSONP
-function loadData(data) {
-  formData = data;
-  const deptSel = document.getElementById("department");
-  deptSel.innerHTML = "<option value=''>Pilih Departemen</option>";
+      const deptSel = document.getElementById("department");
+      deptSel.innerHTML = "<option value=''>Pilih Departemen</option>";
 
-  Object.keys(data).sort().forEach(d => {
-    deptSel.innerHTML += `<option value="${d}">${d}</option>`;
-  });
-
-  deptSel.addEventListener("change", () => {
-    const manSel = document.getElementById("manager");
-    const empSel = document.getElementById("employee");
-    manSel.innerHTML = `<option value="">Pilih Atasan</option>`;
-    empSel.innerHTML = `<option value="">Pilih Karyawan</option>`;
-    empSel.disabled = true;
-
-    if (deptSel.value) {
-      Object.keys(data[deptSel.value]).forEach(m => {
-        manSel.innerHTML += `<option value="${m}">${m}</option>`;
+      Object.keys(data).forEach(d => {
+        deptSel.innerHTML += `<option value="${d}">${d}</option>`;
       });
-      manSel.disabled = false;
+
+      // event saat departemen dipilih
+      deptSel.onchange = function() {
+        const managers = formData[this.value] || {};
+        const managerSel = document.getElementById("manager");
+        managerSel.disabled = false;
+        managerSel.innerHTML = "<option value=''>Pilih Atasan</option>";
+
+        Object.keys(managers).forEach(m => {
+          managerSel.innerHTML += `<option value="${m}">${m}</option>`;
+        });
+
+        document.getElementById("employee").innerHTML =
+          "<option value=''>Pilih Karyawan</option>";
+        document.getElementById("employee").disabled = true;
+      };
+
+      // event saat atasan dipilih
+      document.getElementById("manager").onchange = function() {
+        const dept = document.getElementById("department").value;
+        const employees = formData[dept][this.value] || [];
+        const empSel = document.getElementById("employee");
+        empSel.disabled = false;
+        empSel.innerHTML = "<option value=''>Pilih Karyawan</option>";
+
+        employees.forEach(e => {
+          empSel.innerHTML += `<option value="${e}">${e}</option>`;
+        });
+      };
     }
-  });
 
-  document.getElementById("manager").addEventListener("change", e => {
-    const dept = deptSel.value;
-    const man = e.target.value;
-    const empSel = document.getElementById("employee");
-    empSel.innerHTML = `<option value="">Pilih Karyawan</option>`;
-    if (man) {
-      data[dept][man].forEach(emp => {
-        empSel.innerHTML += `<option value="${emp}">${emp}</option>`;
-      });
-      empSel.disabled = false;
+    // ambil data JSONP
+    function getDataJSONP() {
+      const script = document.createElement("script");
+      script.src = API_URL + "?callback=loadData";
+      document.body.appendChild(script);
     }
-  });
-}
 
-// load JSONP
-function getDataJSONP() {
-  const script = document.createElement("script");
-  script.src = API_URL + "?callback=loadData";
-  document.body.appendChild(script);
-}
-window.onload = getDataJSONP;
-</script>
+    window.onload = getDataJSONP;
 
+    // handle submit form
+    document.getElementById("evaluationForm").addEventListener("submit", async function(e) {
+      e.preventDefault();
+
+      alert("Form terkirim (dummy). Untuk benar-benar kirim ke Apps Script, perlu dibuat doPost handler di GS.");
+    });
+  </script>
+</body>
+</html>
