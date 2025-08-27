@@ -373,7 +373,7 @@
          </div>
       </div>
     </div>
-
+	<div class="flex justify-end">
       <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded">
         Submit
       </button>
@@ -465,10 +465,10 @@
           mode: "no-cors"
         });
 
-        alert("Data berhasil dikirim!");
+        alert("Data berhasil disimpan!");
         form.reset();
       } catch (err) {
-        alert("Gagal kirim: " + err.message);
+        alert("Gagal simpan: " + err.message);
       }
     });
 
@@ -476,25 +476,3 @@
   </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
