@@ -7,50 +7,80 @@
   <script src="https://cdn.tailwindcss.com"></script>
   
 <style>
-  /* placeholder color sebelum ada pilihan (works when select is required and first option value="") */
-  select:invalid { color: #6b7280; }   /* gray-500 untuk placeholder text */
-  /* option text normal */
-  select option { color: #111827; }   /* gray-900 */
-  /* hilangkan outline bawaan di beberapa browser (opsional) */
-  select:focus { outline: none; }
-  /* kalau mau arrow custom (opsional): */
-  .custom-select {
-    background-image: url('data:image/svg+xml;utf8,<svg ...>'); /* optional custom arrow */
-    background-repeat: no-repeat;
-    background-position: right .75rem center;
+    body {
+      background-color: #f4f4f6; /* Background behind the form */
+      color: #1f2937; /* Tailwind's gray-800 for text */
+    }
+    .form-container {
+      background-color: #ffffff; /* Form background */
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); /* Thin shadow */
+      border-radius: 0.5rem; /* Rounded corners */
+    }
+    .animated-dropdown {
+      transition: all 0.1s ease;
+      background-color: #f1f5f9; /* Dropdown background */
+      border-color: #cbd5e1; /* Dropdown border color */
+    }
+    .card-hover {
+      transition: transform 0.1s;
+    }
+    .card-hover:hover {
+      transform: translateY(-5px);
+    }
+    /* Penyesuaian untuk tampilan rating pada layar kecil */
+    .rating-options {
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem; /* Jarak antar radio button */
+      flex-wrap: wrap; /* Agar wrap ke baris baru jika tidak cukup ruang */
+    }
+    .rating-options label {
+      flex-shrink: 0; /* Mencegah label menyusut terlalu banyak */
+      padding: 0.25rem 0.5rem; /* Sedikit padding untuk area sentuh */
+    }
+
+    /* Custom CSS untuk tampilan penuh di HP */
+    html {
+    width: 100%;
+    min-width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+    margin: 0;
+    padding: 0;
   }
-</style>
+  body {
+    width: 100%; /* Tambahkan width 100% juga ke body */
+    min-width: 100%;
+    max-width: 100%;
+    overflow-x: hidden; /* Pastikan juga di body */
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
 
-<!-- HTML select -->
-<label class="block text-xs font-medium text-gray-600 mb-1">Masa Penilaian</label>
-<select name="periode" required
-        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm
-               bg-blue-50 text-gray-700 focus:outline-none focus:ring-indigo-500 focus:border-blue-600
-               custom-select">
-  <!-- placeholder option: value kosong supaya :invalid cocok -->
-  <option value="">Pilih Masa Penilaian</option>
-  <option value="Jan - Apr">Jan - Apr</option>
-  <option value="Mei - Agu">Mei - Agu</option>
-  <option value="Sep - Des">Sep - Des</option>
-</select>
-
-<!-- small JS untuk jaga tampilan di browser yg aneh -->
-<script>
-  document.querySelectorAll('select').forEach(sel => {
-    // apply initial class if value kosong (so folder color shows)
-    if (!sel.value) sel.classList.add('bg-blue-50');
-    else sel.classList.remove('bg-blue-50');
-
-    sel.addEventListener('change', () => {
-      if (!sel.value) {
-        sel.classList.add('bg-blue-50');
-      } else {
-        // kalau mau biarkan tetap berwarna setelah dipilih, comment baris ini
-        sel.classList.remove('bg-blue-50');
+      /* Pastikan div terluar mengisi penuh */
+      .py-6.px-4 { /* Targetkan div terluar dengan kelas ini */
+        width: 100%;
+        padding: 0 !important; /* Hapus semua padding di div terluar secara paksa */
+        margin: 0 !important; /* Hapus semua margin di div terluar secara paksa */
       }
-    });
-  });
-</script>
+
+      /* Pastikan form-container mengisi penuh lebar */
+      .form-container {
+        width: 100% !important; /* Paksa lebar 100% */
+        max-width: 100% !important; /* Paksa max-width 100% */
+        border-radius: 0 !important; /* Hapus border-radius secara paksa */
+        box-shadow: none !important; /* Hapus shadow secara paksa */
+      }
+
+      /* Tambahkan padding internal pada konten formulir agar tidak menempel tepi */
+      .space-y-3 {
+        padding: 1rem; /* Tambahkan padding internal ke konten formulir */
+      }
+    }
+  </style>
   
 </head>
 <body class="bg-gray-100">
@@ -284,6 +314,7 @@
   </script>
 </body>
 </html>
+
 
 
 
