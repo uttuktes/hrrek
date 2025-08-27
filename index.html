@@ -437,40 +437,62 @@
     });
 
     // === Submit form ===
-    document.getElementById("evaluationForm").addEventListener("submit", async function(e) {
-      e.preventDefault();
+    
+  document.getElementById("evaluationForm").addEventListener("submit", async function(e) {
+    e.preventDefault();
 
-      const form = e.target;
-      const payload = {
-        periode: form.periode.value,
-        department: form.department.value,
-        manager: form.manager.value,
-        employee: form.employee.value,
-        q1: form.q1.value,
-        q2: form.q2.value,
-        q3: form.q3.value,
-        q4: form.q4.value,
-        q5: form.q5.value,
-        q6: form.q6.value,
-        q7: form.q7.value,
-        q8: form.q8.value,
-        notes: form.notes.value
-      };
+    const form = e.target;
+    const submitBtn = form.querySelector("button[type='submit']");
+    const originalText = submitBtn.innerHTML;
 
-      try {
-        await fetch(API_URL, {
-          method: "POST",
-          body: JSON.stringify(payload),
-          headers: { "Content-Type": "application/json" },
-          mode: "no-cors"
-        });
+    // Ganti tombol jadi loading
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = `
+      <svg class="animate-spin h-5 w-5 mr-2 inline-block text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+      </svg>
+      Loading...
+    `;
 
-        alert("Data berhasil disimpan!");
+    const payload = {
+      periode: form.periode.value,
+      department: form.department.value,
+      manager: form.manager.value,
+      employee: form.employee.value,
+      q1: form.q1.value,
+      q2: form.q2.value,
+      q3: form.q3.value,
+      q4: form.q4.value,
+      q5: form.q5.value,
+      q6: form.q6.value,
+      q7: form.q7.value,
+      q8: form.q8.value,
+      notes: form.notes.value
+    };
+
+    try {
+      await fetch(API_URL, {
+        method: "POST",
+        body: JSON.stringify(payload),
+        headers: { "Content-Type": "application/json" },
+        mode: "no-cors"
+      });
+
+      // UX 0.8
+      setTimeout(() => {
+        alert("Data berhasil dikirim!");
         form.reset();
-      } catch (err) {
-        alert("Gagal simpan: " + err.message);
-      }
-    });
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalText;
+      }, 800);
+
+    } catch (err) {
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = originalText;
+      alert("Gagal kirim: " + err.message);
+    }
+  });
 
     window.onload = getDataJSONP;
   </script>
