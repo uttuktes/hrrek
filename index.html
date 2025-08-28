@@ -257,10 +257,13 @@
 
     try {
       const res = await fetch(API_URL, {
-        method: "POST",
-        body: JSON.stringify(payload),
-        headers: { "Content-Type": "application/json" }
-      });
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify(payload),
+  credentials: "include" // 🔑 wajib biar session login terbaca
+});
 
       const text = await res.text(); // Apps Script biasanya return text/json
       alert("Data berhasil dikirim! Respon: " + text);
@@ -278,6 +281,7 @@
 
 </body>
 </html>
+
 
 
 
