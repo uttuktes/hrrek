@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Form Evaluasi Kinerja</title>
@@ -84,6 +85,36 @@
   
 </head>
 <body class="bg-gray-100 m-1 p-1">
+<div id="g_id_onload"
+     data-client_id="YOUR_GOOGLE_CLIENT_ID"
+     data-context="signin"
+     data-callback="handleCredentialResponse"
+     data-auto_prompt="false">
+</div>
+<div class="g_id_signin" data-type="standard"></div>
+
+<script>
+  function handleCredentialResponse(response) {
+    // Token Google
+    const id_token = response.credential;
+
+    // Kirim ke Apps Script untuk verifikasi
+    fetch("YOUR_APPS_SCRIPT_URL", {
+      method: "POST",
+      body: JSON.stringify({ token: id_token }),
+      headers: { "Content-Type": "application/json" }
+    })
+    .then(r => r.json())
+    .then(res => {
+      if (res.success) {
+        document.getElementById("evaluationForm").style.display = "block";
+      } else {
+        alert("Login gagal / email tidak diizinkan");
+      }
+    });
+  }
+</script>
+	
   <div class="max-w-4xl mx-auto bg-white p-8 shadow-lg rounded-lg mt-0">
     <img src="https://media.licdn.com/dms/image/v2/D4E3DAQHdQ8hI0F8kFw/image-scale_191_1128/image-scale_191_1128/0/1729146506484/espera_satya_cover?e=2147483647&v=beta&t=Li35iFgVbilg53Our-rLWfp4cdXEVmF1ZzX6mRVCLfw"
        alt="Espera Satya"
@@ -498,6 +529,7 @@
   </script>
 </body>
 </html>
+
 
 
 
