@@ -255,16 +255,18 @@
       btn.disabled = true;
       btn.innerHTML = 'Loading <span class="spinner"></span>';
 
-      try {
-        await fetch(API_URL, {
-          method: "POST",
-          body: JSON.stringify(payload),
-          headers: { "Content-Type": "application/json" }
-        });
-        alert("Data berhasil dikirim!");
-        form.reset();
-      } catch (err) {
-        alert("Gagal kirim: " + err.message);
+     try {
+      await fetch(API_URL, {
+         method: "POST",
+        body: JSON.stringify(payload),
+        headers: { "Content-Type": "application/json" },
+        mode: "no-cors" // biar tidak di-block CORS
+  });
+  alert("Data berhasil dikirim!");
+  form.reset();
+} catch (err) {
+  alert("Gagal kirim: " + err.message);
+}
       } finally {
         btn.disabled = false;
         btn.innerHTML = "Submit";
@@ -275,6 +277,7 @@
   </script>
 </body>
 </html>
+
 
 
 
