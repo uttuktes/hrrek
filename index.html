@@ -189,94 +189,96 @@
   </div>
 
   <script>
-    const API_URL = "https://script.google.com/macros/s/AKfycbygb0UZiionm-0bgQ6hKfhqBnOw1P3oSPeSM7b35OMBE4XBOEk_W06eY9XccCtkIPWB/exec";
-    let formData = {};
+  const API_URL = "https://script.google.com/macros/s/AKfycbxIEDaxNBVssAt11rx6uKDoQ1uXpi1hONxRoCkOilu0Qsbl-0WaiaH_Bu4JoSjypmqP/exec";
+  let formData = {};
 
-    function loadData(data) {
-      formData = data;
-      const deptSel = document.getElementById("department");
-      deptSel.innerHTML = "<option value=''>Pilih Departemen</option>";
-      Object.keys(data).forEach(d => {
-        deptSel.innerHTML += `<option value="${d}">${d}</option>`;
+  function loadData(data) {
+    formData = data;
+    const deptSel = document.getElementById("department");
+    deptSel.innerHTML = "<option value=''>Pilih Departemen</option>";
+    Object.keys(data).forEach(d => {
+      deptSel.innerHTML += `<option value="${d}">${d}</option>`;
+    });
+  }
+
+  function getDataJSONP() {
+    const script = document.createElement("script");
+    script.src = API_URL + "?callback=loadData";
+    document.body.appendChild(script);
+  }
+
+  document.getElementById("department").addEventListener("change", function() {
+    const val = this.value;
+    const mgrSel = document.getElementById("manager");
+    const empSel = document.getElementById("employee");
+    mgrSel.innerHTML = "<option value=''>Pilih Atasan</option>";
+    empSel.innerHTML = "<option value=''>Pilih Karyawan</option>";
+    mgrSel.disabled = true; empSel.disabled = true;
+
+    if (val && formData[val]) {
+      Object.keys(formData[val]).forEach(m => {
+        mgrSel.innerHTML += `<option value="${m}">${m}</option>`;
       });
+      mgrSel.disabled = false;
     }
-
-    function getDataJSONP() {
-      const script = document.createElement("script");
-      script.src = API_URL + "?callback=loadData";
-      document.body.appendChild(script);
-    }
-
-    document.getElementById("department").addEventListener("change", function() {
-      const val = this.value;
-      const mgrSel = document.getElementById("manager");
-      const empSel = document.getElementById("employee");
-      mgrSel.innerHTML = "<option value=''>Pilih Atasan</option>";
-      empSel.innerHTML = "<option value=''>Pilih Karyawan</option>";
-      mgrSel.disabled = true; empSel.disabled = true;
-
-      if (val && formData[val]) {
-        Object.keys(formData[val]).forEach(m => {
-          mgrSel.innerHTML += `<option value="${m}">${m}</option>`;
-        });
-        mgrSel.disabled = false;
-      }
-    });
-
-    document.getElementById("manager").addEventListener("change", function() {
-      const dept = document.getElementById("department").value;
-      const mgr = this.value;
-      const empSel = document.getElementById("employee");
-      empSel.innerHTML = "<option value=''>Pilih Karyawan</option>";
-      empSel.disabled = true;
-
-      if (dept && mgr && formData[dept][mgr]) {
-        formData[dept][mgr].forEach(e => {
-          empSel.innerHTML += `<option value="${e}">${e}</option>`;
-        });
-        empSel.disabled = false;
-      }
-    });
-
-    document.getElementById("evaluationForm").addEventListener("submit", async function(e) {
-      e.preventDefault();
-      const form = e.target;
-      const payload = {
-        periode: form.periode.value,
-        department: form.department.value,
-        manager: form.manager.value,
-        employee: form.employee.value,
-        q1: form.q1.value, q2: form.q2.value, q3: form.q3.value, q4: form.q4.value,
-        q5: form.q5.value, q6: form.q6.value, q7: form.q7.value, q8: form.q8.value,
-        notes: form.notes.value
-      };
-
-      const btn = document.getElementById("submitBtn");
-      btn.disabled = true;
-      btn.innerHTML = 'Loading <span class="spinner"></span>';
-
-     try {
-      await fetch(API_URL, {
-         method: "POST",
-        body: JSON.stringify(payload),
-        headers: { "Content-Type": "application/json" },
-        mode: "no-cors" // biar tidak di-block CORS
   });
-  alert("Data berhasil dikirim!");
-  form.reset();
-} catch (err) {
-  alert("Gagal kirim: " + err.message);
 
-      } finally {
-        btn.disabled = false;
-        btn.innerHTML = "Submit";
-      }
-    });
+  document.getElementById("manager").addEventListener("change", function() {
+    const dept = document.getElementById("department").value;
+    const mgr = this.value;
+    const empSel = document.getElementById("employee");
+    empSel.innerHTML = "<option value=''>Pilih Karyawan</option>";
+    empSel.disabled = true;
 
-    window.onload = getDataJSONP;
-  </script>
+    if (dept && mgr && formData[dept][mgr]) {
+      formData[dept][mgr].forEach(e => {
+        empSel.innerHTML += `<option value="${e}">${e}</option>`;
+      });
+      empSel.disabled = false;
+    }
+  });
+
+  document.getElementById("evaluationForm").addEventListener("submit", async function(e) {
+    e.preventDefault();
+    const form = e.target;
+    const payload = {
+      periode: form.periode.value,
+      department: form.department.value,
+      manager: form.manager.value,
+      employee: form.employee.value,
+      q1: form.q1.value, q2: form.q2.value, q3: form.q3.value, q4: form.q4.value,
+      q5: form.q5.value, q6: form.q6.value, q7: form.q7.value, q8: form.q8.value,
+      notes: form.notes.value
+    };
+
+    const btn = document.getElementById("submitBtn");
+    btn.disabled = true;
+    btn.innerHTML = 'Loading <span class="spinner"></span>';
+
+    try {
+      const res = await fetch(API_URL, {
+        method: "POST",
+        body: JSON.stringify(payload),
+        headers: { "Content-Type": "application/json" }
+      });
+
+      const text = await res.text(); // Apps Script biasanya return text/json
+      alert("Data berhasil dikirim! Respon: " + text);
+      form.reset();
+    } catch (err) {
+      alert("Gagal kirim: " + err.message);
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = "Submit";
+    }
+  });
+
+  window.onload = getDataJSONP;
+</script>
+
 </body>
 </html>
+
 
 
 
