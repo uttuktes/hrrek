@@ -5,48 +5,94 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Form Evaluasi Kinerja</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    body { margin: 0; padding: 0; background-color: #f4f4f6; }
+  
+<style>
+    body {
+      background-color: #f4f4f6;
+      color: #1f2937;
+    }
+    .form-container {
+      background-color: #ffffff;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      border-radius: 0.5rem;
+    }
     .animated-dropdown {
+      transition: all 0.1s ease;
       background-color: #f1f5f9;
       border-color: #cbd5e1;
-      transition: all 0.15s ease;
     }
-    .oval-container { display: flex; justify-content: center; gap: .5rem; }
-    .circle-option input[type="radio"] { display: none; }
-    .circle-option {
-      width: 2rem; height: 2rem;
-      display: flex; align-items: center; justify-content: center;
-      border: 1px solid #6b7280; border-radius: 9999px;
-      cursor: pointer; font-size: .875rem; background: #fff;
+    .card-hover {
+      transition: transform 0.1s;
     }
-    .circle-option input[type="radio"]:checked + span {
-      background: #2563eb; color: white; border-radius: 9999px; padding: .25rem .5rem;
+    .card-hover:hover {
+      transform: translateY(-5px);
     }
-    .spinner {
-      border: 2px solid #f3f3f3;
-      border-top: 2px solid #2563eb;
-      border-radius: 50%;
-      width: 16px; height: 16px;
-      animation: spin 1s linear infinite;
-      display: inline-block; margin-left: 6px;
+    .rating-options {
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
     }
-    @keyframes spin { 100% { transform: rotate(360deg); } }
-  </style>
-</head>
-<body>
-  <div class="max-w-4xl mx-auto bg-white p-6 shadow rounded-lg mt-4">
-    <img src="https://media.licdn.com/dms/image/v2/D4E3DAQHdQ8hI0F8kFw/image-scale_191_1128/image-scale_191_1128/0/1729146506484/espera_satya_cover?e=2147483647&v=beta&t=Li35iFgVbilg53Our-rLWfp4cdXEVmF1ZzX6mRVCLfw"
-         alt="Espera Satya"
-         class="w-full h-36 object-cover object-right rounded-t-lg">
+    .rating-options label {
+      flex-shrink: 0;
+      padding: 0.25rem 0.5rem;
+    }
 
-    <h2 class="text-2xl font-bold my-4 text-center">FORMULIR EVALUASI KINERJA</h2>
+    /* force custom css full sc di hp */
+    html {
+    width: 100%;
+    min-width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+    margin: 0;
+    padding: 0;
+  }
+  body {
+    width: 100%; /* force width 100% body */
+    min-width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+
+      .py-6.px-4 { 
+        width: 100%;
+        padding: 0 !important;
+        margin: 0 !important;
+      }
+
+      /* force form-container full sc */
+      .form-container {
+        width: 100% !important;
+        max-width: 100% !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+      }
+
+      /* padding jarak di tepi */
+      .space-y-3 {
+        padding: 1rem;
+      }
+    }
+  </style>
+  
+</head>
+<body class="bg-gray-100">
+  <div class="max-w-4xl mx-auto bg-white p-8 shadow-lg rounded-lg mt-10">
+    <img src="https://media.licdn.com/dms/image/v2/D4E3DAQHdQ8hI0F8kFw/image-scale_191_1128/image-scale_191_1128/0/1729146506484/espera_satya_cover?e=2147483647&v=beta&t=Li35iFgVbilg53Our-rLWfp4cdXEVmF1ZzX6mRVCLfw"
+       alt="Espera Satya"
+       class="w-full h-32 object-cover rounded-t-lg">     
+    <h2 class="text-2xl font-bold mb-6 text-center">FORMULIR EVALUASI KINERJA</h2>
 
     <form id="evaluationForm" class="space-y-6">
-      <!-- Periode -->
+
       <div>
         <label class="block font-semibold">Masa Penilaian</label>
-        <select name="periode" class="animated-dropdown mt-1 block w-full px-3 py-2 border rounded-md shadow-sm" required>
+        <select name="periode" class="animated-dropdown mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-blue-600" required>
           <option value="">Pilih Periode</option>
           <option>Jan - Apr</option>
           <option>Mei - Agu</option>
@@ -54,240 +100,376 @@
         </select>
       </div>
 
-      <!-- Departemen -->
       <div>
         <label class="block font-semibold">Departemen</label>
-        <select id="department" name="department" class="animated-dropdown mt-1 block w-full px-3 py-2 border rounded-md shadow-sm" required>
+        <select id="department" name="department" class="animated-dropdown mt-1 block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-blue-600" required>
           <option value="">Pilih Departemen</option>
         </select>
       </div>
 
-      <!-- Atasan -->
       <div>
         <label class="block font-semibold">Atasan</label>
-        <select id="manager" name="manager" class="animated-dropdown mt-1 block w-full px-3 py-2 border rounded-md shadow-sm" required disabled>
+        <select id="manager" name="manager" class="animated-dropdown mt-1 block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-blue-600" required disabled>
           <option value="">Pilih Atasan</option>
         </select>
       </div>
 
-      <!-- Karyawan -->
       <div>
         <label class="block font-semibold">Karyawan</label>
-        <select id="employee" name="employee" class="animated-dropdown mt-1 block w-full px-3 py-2 border rounded-md shadow-sm" required disabled>
+        <select id="employee" name="employee" class="animated-dropdown mt-1 block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-blue-600" required disabled>
           <option value="">Pilih Karyawan</option>
         </select>
       </div>
 
-      <!-- Pertanyaan (1–8) -->
-      <div>
-        <p class="font-semibold mb-2 underline">Penilaian Karyawan :</p>
-        <div class="space-y-4 mt-4">
+<div>
+  <p class="font-semibold mb-2 underline">Penilaian Karyawan :</p>
 
-          <div>
-            <label class="block mb-1">1. Disiplin dalam melakukan pekerjaan sesuai instruksi kerja yang ada</label>
-            <div class="oval-container">
-              <label class="circle-option"><input type="radio" name="q1" value="1" required><span>1</span></label>
-              <label class="circle-option"><input type="radio" name="q1" value="2"><span>2</span></label>
-              <label class="circle-option"><input type="radio" name="q1" value="3"><span>3</span></label>
-              <label class="circle-option"><input type="radio" name="q1" value="4"><span>4</span></label>
-              <label class="circle-option"><input type="radio" name="q1" value="5"><span>5</span></label>
-            </div>
-          </div>
+  <style>
+    .oval-container {
+      @apply flex justify-center bg-gray-100 border border-gray-300 rounded-full p-2 space-x-2;
+    }
+    .circle-option input[type="radio"] {
+      display: none;
+    }
+    .circle-option {
+      @apply relative w-8 h-8 flex items-center justify-center border border-gray-500 rounded-full cursor-pointer text-sm bg-white hover:bg-blue-100;
+    }
+    .circle-option input[type="radio"]:checked + span {
+      @apply bg-blue-600 text-white;
+    }
+  </style>
 
-          <div>
-            <label class="block mb-1">2. Terampil dalam mengerjakan tugas</label>
-            <div class="oval-container">
-              <label class="circle-option"><input type="radio" name="q2" value="1" required><span>1</span></label>
-              <label class="circle-option"><input type="radio" name="q2" value="2"><span>2</span></label>
-              <label class="circle-option"><input type="radio" name="q2" value="3"><span>3</span></label>
-              <label class="circle-option"><input type="radio" name="q2" value="4"><span>4</span></label>
-              <label class="circle-option"><input type="radio" name="q2" value="5"><span>5</span></label>
-            </div>
-          </div>
-
-          <div>
-            <label class="block mb-1">3. Sigap dalam menjalankan pekerjaan</label>
-            <div class="oval-container">
-              <label class="circle-option"><input type="radio" name="q3" value="1" required><span>1</span></label>
-              <label class="circle-option"><input type="radio" name="q3" value="2"><span>2</span></label>
-              <label class="circle-option"><input type="radio" name="q3" value="3"><span>3</span></label>
-              <label class="circle-option"><input type="radio" name="q3" value="4"><span>4</span></label>
-              <label class="circle-option"><input type="radio" name="q3" value="5"><span>5</span></label>
-            </div>
-          </div>
-
-          <div>
-            <label class="block mb-1">4. Tidak banyak mengobrol dalam jam kerja / membuang waktu</label>
-            <div class="oval-container">
-              <label class="circle-option"><input type="radio" name="q4" value="1" required><span>1</span></label>
-              <label class="circle-option"><input type="radio" name="q4" value="2"><span>2</span></label>
-              <label class="circle-option"><input type="radio" name="q4" value="3"><span>3</span></label>
-              <label class="circle-option"><input type="radio" name="q4" value="4"><span>4</span></label>
-              <label class="circle-option"><input type="radio" name="q4" value="5"><span>5</span></label>
-            </div>
-          </div>
-
-          <div>
-            <label class="block mb-1">5. Siap dan mampu bekerjasama dengan rekan kerja</label>
-            <div class="oval-container">
-              <label class="circle-option"><input type="radio" name="q5" value="1" required><span>1</span></label>
-              <label class="circle-option"><input type="radio" name="q5" value="2"><span>2</span></label>
-              <label class="circle-option"><input type="radio" name="q5" value="3"><span>3</span></label>
-              <label class="circle-option"><input type="radio" name="q5" value="4"><span>4</span></label>
-              <label class="circle-option"><input type="radio" name="q5" value="5"><span>5</span></label>
-            </div>
-          </div>
-
-          <div>
-            <label class="block mb-1">6. Siap melaksanakan perintah atasan (misal: lembur)</label>
-            <div class="oval-container">
-              <label class="circle-option"><input type="radio" name="q6" value="1" required><span>1</span></label>
-              <label class="circle-option"><input type="radio" name="q6" value="2"><span>2</span></label>
-              <label class="circle-option"><input type="radio" name="q6" value="3"><span>3</span></label>
-              <label class="circle-option"><input type="radio" name="q6" value="4"><span>4</span></label>
-              <label class="circle-option"><input type="radio" name="q6" value="5"><span>5</span></label>
-            </div>
-          </div>
-
-          <div>
-            <label class="block mb-1">7. Menjaga kebersihan mesin dan lingkungan kerja</label>
-            <div class="oval-container">
-              <label class="circle-option"><input type="radio" name="q7" value="1" required><span>1</span></label>
-              <label class="circle-option"><input type="radio" name="q7" value="2"><span>2</span></label>
-              <label class="circle-option"><input type="radio" name="q7" value="3"><span>3</span></label>
-              <label class="circle-option"><input type="radio" name="q7" value="4"><span>4</span></label>
-              <label class="circle-option"><input type="radio" name="q7" value="5"><span>5</span></label>
-            </div>
-          </div>
-
-          <div>
-            <label class="block mb-1">8. Memahami bahwa bekerja adalah ibadah</label>
-            <div class="oval-container">
-              <label class="circle-option"><input type="radio" name="q8" value="1" required><span>1</span></label>
-              <label class="circle-option"><input type="radio" name="q8" value="2"><span>2</span></label>
-              <label class="circle-option"><input type="radio" name="q8" value="3"><span>3</span></label>
-              <label class="circle-option"><input type="radio" name="q8" value="4"><span>4</span></label>
-              <label class="circle-option"><input type="radio" name="q8" value="5"><span>5</span></label>
-            </div>
-          </div>
-
-        </div>
+  <div class="space-y-4 mt-4">
+  
+    <div>
+      <label class="block mb-1">1. Disiplin dalam melakukan pekerjaan sesuai instruksi kerja yang ada</label>
+      <div class="flex justify-center items-center bg-gray-100 border border-gray-300 rounded-full px-4 py-2 space-x-1 w-fit mx-auto shadow-inner" style="max-width: 280px;">
+        <label class="relative w-7 h-7 flex items-center justify-center border border-gray-500 rounded-full cursor-pointer text-xs bg-white hover:bg-blue-100">
+          <input type="radio" name="q1" value="1" class="hidden peer" required>
+          <span class="peer-checked:bg-blue-600 peer-checked:text-white w-full h-full flex items-center justify-center rounded-full">1</span>
+        </label>
+        <label class="relative w-7 h-7 flex items-center justify-center border border-gray-500 rounded-full cursor-pointer text-xs bg-white hover:bg-blue-100">
+          <input type="radio" name="q1" value="2" class="hidden peer">
+          <span class="peer-checked:bg-blue-600 peer-checked:text-white w-full h-full flex items-center justify-center rounded-full">2</span>
+        </label>
+        <label class="relative w-7 h-7 flex items-center justify-center border border-gray-500 rounded-full cursor-pointer text-xs bg-white hover:bg-blue-100">
+          <input type="radio" name="q1" value="3" class="hidden peer">
+          <span class="peer-checked:bg-blue-600 peer-checked:text-white w-full h-full flex items-center justify-center rounded-full">3</span>
+        </label>
+        <label class="relative w-7 h-7 flex items-center justify-center border border-gray-500 rounded-full cursor-pointer text-xs bg-white hover:bg-blue-100">
+          <input type="radio" name="q1" value="4" class="hidden peer">
+          <span class="peer-checked:bg-blue-600 peer-checked:text-white w-full h-full flex items-center justify-center rounded-full">4</span>
+        </label>
+        <label class="relative w-7 h-7 flex items-center justify-center border border-gray-500 rounded-full cursor-pointer text-xs bg-white hover:bg-blue-100">
+          <input type="radio" name="q1" value="5" class="hidden peer">
+          <span class="peer-checked:bg-blue-600 peer-checked:text-white w-full h-full flex items-center justify-center rounded-full">5</span>
+        </label>
       </div>
+    </div>
 
-      <!-- Evaluasi Karyawan -->
-      <div>
-        <label class="block text-sm font-semibold text-gray-700 mb-1 underline">Evaluasi Karyawan :</label>
-        <textarea id="notes" name="notes" rows="4" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm" placeholder="Hal-hal yang perlu diperbaiki terkait tampilan kinerja karyawan . . ."></textarea>
+    <div>
+      <label class="block mb-1">2. Trampil dalam mengerjakan tugas</label>
+      <div class="flex justify-center items-center bg-gray-100 border border-gray-300 rounded-full px-4 py-2 space-x-1 w-fit mx-auto shadow-inner" style="max-width: 280px;">
+        <label class="relative w-7 h-7 flex items-center justify-center border border-gray-500 rounded-full cursor-pointer text-xs bg-white hover:bg-blue-100">
+          <input type="radio" name="q2" value="1" class="hidden peer" required>
+          <span class="peer-checked:bg-blue-600 peer-checked:text-white w-full h-full flex items-center justify-center rounded-full">1</span>
+        </label>
+        <label class="relative w-7 h-7 flex items-center justify-center border border-gray-500 rounded-full cursor-pointer text-xs bg-white hover:bg-blue-100">
+          <input type="radio" name="q2" value="2" class="hidden peer">
+          <span class="peer-checked:bg-blue-600 peer-checked:text-white w-full h-full flex items-center justify-center rounded-full">2</span>
+        </label>
+        <label class="relative w-7 h-7 flex items-center justify-center border border-gray-500 rounded-full cursor-pointer text-xs bg-white hover:bg-blue-100">
+          <input type="radio" name="q2" value="3" class="hidden peer">
+          <span class="peer-checked:bg-blue-600 peer-checked:text-white w-full h-full flex items-center justify-center rounded-full">3</span>
+        </label>
+        <label class="relative w-7 h-7 flex items-center justify-center border border-gray-500 rounded-full cursor-pointer text-xs bg-white hover:bg-blue-100">
+          <input type="radio" name="q2" value="4" class="hidden peer">
+          <span class="peer-checked:bg-blue-600 peer-checked:text-white w-full h-full flex items-center justify-center rounded-full">4</span>
+        </label>
+        <label class="relative w-7 h-7 flex items-center justify-center border border-gray-500 rounded-full cursor-pointer text-xs bg-white hover:bg-blue-100">
+          <input type="radio" name="q2" value="5" class="hidden peer">
+          <span class="peer-checked:bg-blue-600 peer-checked:text-white w-full h-full flex items-center justify-center rounded-full">5</span>
+        </label>
       </div>
+    </div>
 
-      <div class="flex justify-end">
-        <button id="submitBtn" type="submit" class="bg-blue-600 text-white px-6 py-2 rounded flex items-center">
-          Submit
-        </button>
+    <div>
+      <label class="block mb-1">3. Sigap dalam menjalankan pekerjaan saya</label>
+      <div class="flex justify-center items-center bg-gray-100 border border-gray-300 rounded-full px-4 py-2 space-x-1 w-fit mx-auto shadow-inner" style="max-width: 280px;">
+        <label class="relative w-7 h-7 flex items-center justify-center border border-gray-500 rounded-full cursor-pointer text-xs bg-white hover:bg-blue-100">
+          <input type="radio" name="q3" value="1" class="hidden peer" required>
+          <span class="peer-checked:bg-blue-600 peer-checked:text-white w-full h-full flex items-center justify-center rounded-full">1</span>
+        </label>
+        <label class="relative w-7 h-7 flex items-center justify-center border border-gray-500 rounded-full cursor-pointer text-xs bg-white hover:bg-blue-100">
+          <input type="radio" name="q3" value="2" class="hidden peer">
+          <span class="peer-checked:bg-blue-600 peer-checked:text-white w-full h-full flex items-center justify-center rounded-full">2</span>
+        </label>
+        <label class="relative w-7 h-7 flex items-center justify-center border border-gray-500 rounded-full cursor-pointer text-xs bg-white hover:bg-blue-100">
+          <input type="radio" name="q3" value="3" class="hidden peer">
+          <span class="peer-checked:bg-blue-600 peer-checked:text-white w-full h-full flex items-center justify-center rounded-full">3</span>
+        </label>
+        <label class="relative w-7 h-7 flex items-center justify-center border border-gray-500 rounded-full cursor-pointer text-xs bg-white hover:bg-blue-100">
+          <input type="radio" name="q3" value="4" class="hidden peer">
+          <span class="peer-checked:bg-blue-600 peer-checked:text-white w-full h-full flex items-center justify-center rounded-full">4</span>
+        </label>
+        <label class="relative w-7 h-7 flex items-center justify-center border border-gray-500 rounded-full cursor-pointer text-xs bg-white hover:bg-blue-100">
+          <input type="radio" name="q3" value="5" class="hidden peer">
+          <span class="peer-checked:bg-blue-600 peer-checked:text-white w-full h-full flex items-center justify-center rounded-full">5</span>
+        </label>
       </div>
+    </div>
+
+    <div>
+      <label class="block mb-1">4. Tidak banyak mengobrol dalam jam kerja / membuang-buang waktu untuk kepentingan di luar pekerjaan</label>
+      <div class="flex justify-center items-center bg-gray-100 border border-gray-300 rounded-full px-4 py-2 space-x-1 w-fit mx-auto shadow-inner" style="max-width: 280px;">
+        <label class="relative w-7 h-7 flex items-center justify-center border border-gray-500 rounded-full cursor-pointer text-xs bg-white hover:bg-blue-100">
+          <input type="radio" name="q4" value="1" class="hidden peer" required>
+          <span class="peer-checked:bg-blue-600 peer-checked:text-white w-full h-full flex items-center justify-center rounded-full">1</span>
+        </label>
+        <label class="relative w-7 h-7 flex items-center justify-center border border-gray-500 rounded-full cursor-pointer text-xs bg-white hover:bg-blue-100">
+          <input type="radio" name="q4" value="2" class="hidden peer">
+          <span class="peer-checked:bg-blue-600 peer-checked:text-white w-full h-full flex items-center justify-center rounded-full">2</span>
+        </label>
+        <label class="relative w-7 h-7 flex items-center justify-center border border-gray-500 rounded-full cursor-pointer text-xs bg-white hover:bg-blue-100">
+          <input type="radio" name="q4" value="3" class="hidden peer">
+          <span class="peer-checked:bg-blue-600 peer-checked:text-white w-full h-full flex items-center justify-center rounded-full">3</span>
+        </label>
+        <label class="relative w-7 h-7 flex items-center justify-center border border-gray-500 rounded-full cursor-pointer text-xs bg-white hover:bg-blue-100">
+          <input type="radio" name="q4" value="4" class="hidden peer">
+          <span class="peer-checked:bg-blue-600 peer-checked:text-white w-full h-full flex items-center justify-center rounded-full">4</span>
+        </label>
+        <label class="relative w-7 h-7 flex items-center justify-center border border-gray-500 rounded-full cursor-pointer text-xs bg-white hover:bg-blue-100">
+          <input type="radio" name="q4" value="5" class="hidden peer">
+          <span class="peer-checked:bg-blue-600 peer-checked:text-white w-full h-full flex items-center justify-center rounded-full">5</span>
+        </label>
+      </div>
+    </div>
+
+    <div>
+      <label class="block mb-1">5. Siap dan Mampu bekerjasama dengan rekan sekerja</label>
+      <div class="flex justify-center items-center bg-gray-100 border border-gray-300 rounded-full px-4 py-2 space-x-1 w-fit mx-auto shadow-inner" style="max-width: 280px;">
+        <label class="relative w-7 h-7 flex items-center justify-center border border-gray-500 rounded-full cursor-pointer text-xs bg-white hover:bg-blue-100">
+          <input type="radio" name="q5" value="1" class="hidden peer" required>
+          <span class="peer-checked:bg-blue-600 peer-checked:text-white w-full h-full flex items-center justify-center rounded-full">1</span>
+        </label>
+        <label class="relative w-7 h-7 flex items-center justify-center border border-gray-500 rounded-full cursor-pointer text-xs bg-white hover:bg-blue-100">
+          <input type="radio" name="q5" value="2" class="hidden peer">
+          <span class="peer-checked:bg-blue-600 peer-checked:text-white w-full h-full flex items-center justify-center rounded-full">2</span>
+        </label>
+        <label class="relative w-7 h-7 flex items-center justify-center border border-gray-500 rounded-full cursor-pointer text-xs bg-white hover:bg-blue-100">
+          <input type="radio" name="q5" value="3" class="hidden peer">
+          <span class="peer-checked:bg-blue-600 peer-checked:text-white w-full h-full flex items-center justify-center rounded-full">3</span>
+        </label>
+        <label class="relative w-7 h-7 flex items-center justify-center border border-gray-500 rounded-full cursor-pointer text-xs bg-white hover:bg-blue-100">
+          <input type="radio" name="q5" value="4" class="hidden peer">
+          <span class="peer-checked:bg-blue-600 peer-checked:text-white w-full h-full flex items-center justify-center rounded-full">4</span>
+        </label>
+        <label class="relative w-7 h-7 flex items-center justify-center border border-gray-500 rounded-full cursor-pointer text-xs bg-white hover:bg-blue-100">
+          <input type="radio" name="q5" value="5" class="hidden peer">
+          <span class="peer-checked:bg-blue-600 peer-checked:text-white w-full h-full flex items-center justify-center rounded-full">5</span>
+        </label>
+      </div>
+    </div>
+
+    <div>
+      <label class="block mb-1">6. Dalam bekerja, siap melaksanakan perintah atasan (misal: siap bila ditugaskan lembur dan perintah lain terkait pekerjaan)</label>
+      <div class="flex justify-center items-center bg-gray-100 border border-gray-300 rounded-full px-4 py-2 space-x-1 w-fit mx-auto shadow-inner" style="max-width: 280px;">
+        <label class="relative w-7 h-7 flex items-center justify-center border border-gray-500 rounded-full cursor-pointer text-xs bg-white hover:bg-blue-100">
+          <input type="radio" name="q6" value="1" class="hidden peer" required>
+          <span class="peer-checked:bg-blue-600 peer-checked:text-white w-full h-full flex items-center justify-center rounded-full">1</span>
+        </label>
+        <label class="relative w-7 h-7 flex items-center justify-center border border-gray-500 rounded-full cursor-pointer text-xs bg-white hover:bg-blue-100">
+          <input type="radio" name="q6" value="2" class="hidden peer">
+          <span class="peer-checked:bg-blue-600 peer-checked:text-white w-full h-full flex items-center justify-center rounded-full">2</span>
+        </label>
+        <label class="relative w-7 h-7 flex items-center justify-center border border-gray-500 rounded-full cursor-pointer text-xs bg-white hover:bg-blue-100">
+          <input type="radio" name="q6" value="3" class="hidden peer">
+          <span class="peer-checked:bg-blue-600 peer-checked:text-white w-full h-full flex items-center justify-center rounded-full">3</span>
+        </label>
+        <label class="relative w-7 h-7 flex items-center justify-center border border-gray-500 rounded-full cursor-pointer text-xs bg-white hover:bg-blue-100">
+          <input type="radio" name="q6" value="4" class="hidden peer">
+          <span class="peer-checked:bg-blue-600 peer-checked:text-white w-full h-full flex items-center justify-center rounded-full">4</span>
+        </label>
+        <label class="relative w-7 h-7 flex items-center justify-center border border-gray-500 rounded-full cursor-pointer text-xs bg-white hover:bg-blue-100">
+          <input type="radio" name="q6" value="5" class="hidden peer">
+          <span class="peer-checked:bg-blue-600 peer-checked:text-white w-full h-full flex items-center justify-center rounded-full">5</span>
+        </label>
+      </div>
+    </div>
+
+    <div>
+      <label class="block mb-1">7. Menjaga kebersihan mesin dan atau lingkungan kerja (termasuk tidak makan / minum di area lingkungan kerjanya)</label>
+      <div class="flex justify-center items-center bg-gray-100 border border-gray-300 rounded-full px-4 py-2 space-x-1 w-fit mx-auto shadow-inner" style="max-width: 280px;">
+        <label class="relative w-7 h-7 flex items-center justify-center border border-gray-500 rounded-full cursor-pointer text-xs bg-white hover:bg-blue-100">
+          <input type="radio" name="q7" value="1" class="hidden peer" required>
+          <span class="peer-checked:bg-blue-600 peer-checked:text-white w-full h-full flex items-center justify-center rounded-full">1</span>
+        </label>
+        <label class="relative w-7 h-7 flex items-center justify-center border border-gray-500 rounded-full cursor-pointer text-xs bg-white hover:bg-blue-100">
+          <input type="radio" name="q7" value="2" class="hidden peer">
+          <span class="peer-checked:bg-blue-600 peer-checked:text-white w-full h-full flex items-center justify-center rounded-full">2</span>
+        </label>
+        <label class="relative w-7 h-7 flex items-center justify-center border border-gray-500 rounded-full cursor-pointer text-xs bg-white hover:bg-blue-100">
+          <input type="radio" name="q7" value="3" class="hidden peer">
+          <span class="peer-checked:bg-blue-600 peer-checked:text-white w-full h-full flex items-center justify-center rounded-full">3</span>
+        </label>
+        <label class="relative w-7 h-7 flex items-center justify-center border border-gray-500 rounded-full cursor-pointer text-xs bg-white hover:bg-blue-100">
+          <input type="radio" name="q7" value="4" class="hidden peer">
+          <span class="peer-checked:bg-blue-600 peer-checked:text-white w-full h-full flex items-center justify-center rounded-full">4</span>
+        </label>
+        <label class="relative w-7 h-7 flex items-center justify-center border border-gray-500 rounded-full cursor-pointer text-xs bg-white hover:bg-blue-100">
+          <input type="radio" name="q7" value="5" class="hidden peer">
+          <span class="peer-checked:bg-blue-600 peer-checked:text-white w-full h-full flex items-center justify-center rounded-full">5</span>
+        </label>
+      </div>
+    </div>
+
+    <div>
+		<label class="block mb-1">8. Memahami bahwa bekerja adalah juga ibadah</label>
+		<div class="flex justify-center items-center bg-gray-100 border border-gray-300 rounded-full px-4 py-2 space-x-1 w-fit mx-auto shadow-inner" style="max-width: 280px;">
+			<label class="relative w-7 h-7 flex items-center justify-center border border-gray-500 rounded-full cursor-pointer text-xs bg-white hover:bg-blue-100">
+			<input type="radio" name="q8" value="1" class="hidden peer" required>
+			<span class="peer-checked:bg-blue-600 peer-checked:text-white w-full h-full flex items-center justify-center rounded-full">1</span>
+		</label>
+		<label class="relative w-7 h-7 flex items-center justify-center border border-gray-500 rounded-full cursor-pointer text-xs bg-white hover:bg-blue-100">
+			<input type="radio" name="q8" value="2" class="hidden peer">
+			<span class="peer-checked:bg-blue-600 peer-checked:text-white w-full h-full flex items-center justify-center rounded-full">2</span>
+		</label>
+		<label class="relative w-7 h-7 flex items-center justify-center border border-gray-500 rounded-full cursor-pointer text-xs bg-white hover:bg-blue-100">
+			<input type="radio" name="q8" value="3" class="hidden peer">
+			<span class="peer-checked:bg-blue-600 peer-checked:text-white w-full h-full flex items-center justify-center rounded-full">3</span>
+		</label>
+		<label class="relative w-7 h-7 flex items-center justify-center border border-gray-500 rounded-full cursor-pointer text-xs bg-white hover:bg-blue-100">
+			<input type="radio" name="q8" value="4" class="hidden peer">
+			<span class="peer-checked:bg-blue-600 peer-checked:text-white w-full h-full flex items-center justify-center rounded-full">4</span>
+		</label>
+		<label class="relative w-7 h-7 flex items-center justify-center border border-gray-500 rounded-full cursor-pointer text-xs bg-white hover:bg-blue-100">
+			<input type="radio" name="q8" value="5" class="hidden peer">
+			<span class="peer-checked:bg-blue-600 peer-checked:text-white w-full h-full flex items-center justify-center rounded-full">5</span>
+		</label>
+		</div>
+	</div>
+   
+          <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-1 underline">Evaluasi Karyawan :</label>
+              <textarea id="notes" name="notes" rows="4" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-blue-600" placeholder="Hal-hal yang perlu diperbaiki terkait tampilan kinerja karyawan . . ."></textarea>
+         </div>
+      </div>
+    </div>
+	<div class="flex justify-end">
+      <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded">
+        Submit
+      </button>
     </form>
   </div>
 
   <script>
-  const API_URL = "https://script.google.com/macros/s/AKfycbxIEDaxNBVssAt11rx6uKDoQ1uXpi1hONxRoCkOilu0Qsbl-0WaiaH_Bu4JoSjypmqP/exec";
-  let formData = {};
+  
+    const API_URL = "https://script.google.com/macros/s/AKfycbyMqM-aHDTOMramEpkIUNiIO28XQ1VVCEceUi2QVjlaTvNKHzK9xVXgekDOY68WvmJA/exec";
+    let formData = {};
 
-  function loadData(data) {
-    formData = data;
-    const deptSel = document.getElementById("department");
-    deptSel.innerHTML = "<option value=''>Pilih Departemen</option>";
-    Object.keys(data).forEach(d => {
-      deptSel.innerHTML += `<option value="${d}">${d}</option>`;
+    function loadData(data) {
+      formData = data;
+      const deptSel = document.getElementById("department");
+      deptSel.innerHTML = "<option value=''>Pilih Departemen</option>";
+
+      Object.keys(data).forEach(d => {
+        deptSel.innerHTML += `<option value="${d}">${d}</option>`;
+      });
+    }
+
+    function getDataJSONP() {
+      const script = document.createElement("script");
+      script.src = API_URL + "?callback=loadData";
+      document.body.appendChild(script);
+    }
+
+      document.getElementById("department").addEventListener("change", function() {
+      const val = this.value;
+      const mgrSel = document.getElementById("manager");
+      const empSel = document.getElementById("employee");
+      mgrSel.innerHTML = "<option value=''>Pilih Atasan</option>";
+      empSel.innerHTML = "<option value=''>Pilih Karyawan</option>";
+      mgrSel.disabled = true;
+      empSel.disabled = true;
+
+      if (val && formData[val]) {
+        Object.keys(formData[val]).forEach(m => {
+          mgrSel.innerHTML += `<option value="${m}">${m}</option>`;
+        });
+        mgrSel.disabled = false;
+      }
     });
-  }
 
-  function getDataJSONP() {
-    const script = document.createElement("script");
-    script.src = API_URL + "?callback=loadData";
-    document.body.appendChild(script);
-  }
+    document.getElementById("manager").addEventListener("change", function() {
+      const dept = document.getElementById("department").value;
+      const mgr = this.value;
+      const empSel = document.getElementById("employee");
+      empSel.innerHTML = "<option value=''>Pilih Karyawan</option>";
+      empSel.disabled = true;
 
-  document.getElementById("department").addEventListener("change", function() {
-    const val = this.value;
-    const mgrSel = document.getElementById("manager");
-    const empSel = document.getElementById("employee");
-    mgrSel.innerHTML = "<option value=''>Pilih Atasan</option>";
-    empSel.innerHTML = "<option value=''>Pilih Karyawan</option>";
-    mgrSel.disabled = true; empSel.disabled = true;
-
-    if (val && formData[val]) {
-      Object.keys(formData[val]).forEach(m => {
-        mgrSel.innerHTML += `<option value="${m}">${m}</option>`;
-      });
-      mgrSel.disabled = false;
-    }
-  });
-
-  document.getElementById("manager").addEventListener("change", function() {
-    const dept = document.getElementById("department").value;
-    const mgr = this.value;
-    const empSel = document.getElementById("employee");
-    empSel.innerHTML = "<option value=''>Pilih Karyawan</option>";
-    empSel.disabled = true;
-
-    if (dept && mgr && formData[dept][mgr]) {
-      formData[dept][mgr].forEach(e => {
-        empSel.innerHTML += `<option value="${e}">${e}</option>`;
-      });
-      empSel.disabled = false;
-    }
-  });
-
+      if (dept && mgr && formData[dept][mgr]) {
+        formData[dept][mgr].forEach(e => {
+          empSel.innerHTML += `<option value="${e}">${e}</option>`;
+        });
+        empSel.disabled = false;
+      }
+    });
+   
   document.getElementById("evaluationForm").addEventListener("submit", async function(e) {
     e.preventDefault();
+
     const form = e.target;
+    const submitBtn = form.querySelector("button[type='submit']");
+    const originalText = submitBtn.innerHTML;
+
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = `
+      <svg class="animate-spin h-5 w-5 mr-2 inline-block text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+      </svg>
+      Loading...
+    `;
+
     const payload = {
       periode: form.periode.value,
       department: form.department.value,
       manager: form.manager.value,
       employee: form.employee.value,
-      q1: form.q1.value, q2: form.q2.value, q3: form.q3.value, q4: form.q4.value,
-      q5: form.q5.value, q6: form.q6.value, q7: form.q7.value, q8: form.q8.value,
+      q1: form.q1.value,
+      q2: form.q2.value,
+      q3: form.q3.value,
+      q4: form.q4.value,
+      q5: form.q5.value,
+      q6: form.q6.value,
+      q7: form.q7.value,
+      q8: form.q8.value,
       notes: form.notes.value
     };
 
-    const btn = document.getElementById("submitBtn");
-    btn.disabled = true;
-    btn.innerHTML = 'Loading <span class="spinner"></span>';
-
     try {
-      const res = await fetch(API_URL, {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json"
-  },
-  body: JSON.stringify(payload),
-  credentials: "include" // 🔑 wajib biar session login terbaca
-});
+      await fetch(API_URL, {
+        method: "POST",
+        body: JSON.stringify(payload),
+        headers: { "Content-Type": "application/json" },
+        mode: "no-cors"
+      });
 
-      const text = await res.text(); // Apps Script biasanya return text/json
-      alert("Data berhasil dikirim! Respon: " + text);
-      form.reset();
+      setTimeout(() => {
+        alert("Data berhasil dikirim!");
+        form.reset();
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalText;
+      }, 800);
+
     } catch (err) {
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = originalText;
       alert("Gagal kirim: " + err.message);
-    } finally {
-      btn.disabled = false;
-      btn.innerHTML = "Submit";
     }
   });
 
-  window.onload = getDataJSONP;
-</script>
-
+    window.onload = getDataJSONP;
+  </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
