@@ -416,8 +416,8 @@ mgrSel.disabled = false;
 
 
     document.getElementById("department").addEventListener("change", function() {
-      const dept = document.getElementById("manager").value;
-      const mgr = this.value;
+      const mgr = document.getElementById("manager").value;
+      const dept = this.value;
       const empSel = document.getElementById("employee");
       empSel.innerHTML = "<option value=''>Pilih Karyawan</option>";
       empSel.disabled = true;
@@ -488,6 +488,7 @@ mgrSel.disabled = false;
   </script>
 </body>
 </html>
+
 
 
 
