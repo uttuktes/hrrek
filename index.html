@@ -76,8 +76,7 @@
       /* padding jarak di tepi */
       .space-y-3 {
         padding: 1rem;
-      }
-    }
+      }    
   </style>
   
 </head>
@@ -109,8 +108,7 @@
 
       <div>
         <label class="block font-semibold">Departemen</label>
-        <select id="department" name="department" class="animated-dropdown mt-1 block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-blue-600" required
-			required disabled>
+        <select id="department" name="department" class="animated-dropdown mt-1 block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-blue-600" required disabled>
           <option value="">Pilih Departemen</option>
         </select>
       </div>
@@ -399,13 +397,11 @@ mgrSel.disabled = false;
   if (mgr && formData[mgr]) {
     const depts = Object.keys(formData[mgr]);
     if (depts.length > 0) {
-      // Ambil departemen pertama (asumsi 1 atasan = 1 departemen)
       const firstDept = depts[0];
       deptSel.innerHTML = `<option value=\"${firstDept}\">${firstDept}</option>`;
       deptSel.value = firstDept;
-      deptSel.disabled = true; // kunci departemen, tidak bisa dipilih
-
-      // Isi langsung karyawan sesuai atasan & dept pertama
+      deptSel.disabled = true;
+      
       formData[mgr][firstDept].forEach(e => {
         empSel.innerHTML += `<option value=\"${e}\">${e}</option>`;
       });
@@ -488,6 +484,7 @@ mgrSel.disabled = false;
   </script>
 </body>
 </html>
+
 
 
 
