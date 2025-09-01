@@ -368,13 +368,15 @@
     let formData = {};
 
     function loadData(data) {
-      formData = data;
-      const deptSel = document.getElementById("department");
-      deptSel.innerHTML = "<option value=''>Pilih Departemen</option>";
+formData = data;
+const mgrSel = document.getElementById("manager");
+mgrSel.innerHTML = "<option value=''>Pilih Atasan</option>";
 
-      Object.keys(data).forEach(d => {
-        deptSel.innerHTML += `<option value="${d}">${d}</option>`;
-      });
+
+Object.keys(data).forEach(m => {
+mgrSel.innerHTML += `<option value="${m}">${m}</option>`;
+});
+mgrSel.disabled = false;
     }
 
     function getDataJSONP() {
@@ -383,32 +385,32 @@
       document.body.appendChild(script);
     }
 
-      document.getElementById("department").addEventListener("change", function() {
-      const val = this.value;
-      const mgrSel = document.getElementById("manager");
-      const empSel = document.getElementById("employee");
-      mgrSel.innerHTML = "<option value=''>Pilih Atasan</option>";
-      empSel.innerHTML = "<option value=''>Pilih Karyawan</option>";
-      mgrSel.disabled = true;
-      empSel.disabled = true;
+      document.getElementById("manager").addEventListener("change", function() {
+const mgr = this.value;
+const deptSel = document.getElementById("department");
+const empSel = document.getElementById("employee");
+deptSel.innerHTML = "<option value=''>Pilih Departemen</option>";
+empSel.innerHTML = "<option value=''>Pilih Karyawan</option>";
+deptSel.disabled = true;
+empSel.disabled = true;
 
-      if (val && formData[val]) {
-        Object.keys(formData[val]).forEach(m => {
-          mgrSel.innerHTML += `<option value="${m}">${m}</option>`;
-        });
-        mgrSel.disabled = false;
+      if (mgr && formData[mgr]) {
+Object.keys(formData[mgr]).forEach(d => {
+deptSel.innerHTML += `<option value="${d}">${d}</option>`;
+});
+deptSel.disabled = false;
       }
     });
 
-    document.getElementById("manager").addEventListener("change", function() {
-      const dept = document.getElementById("department").value;
+    document.getElementById("department").addEventListener("change", function() {
+      const dept = document.getElementById("manager").value;
       const mgr = this.value;
       const empSel = document.getElementById("employee");
       empSel.innerHTML = "<option value=''>Pilih Karyawan</option>";
       empSel.disabled = true;
 
-      if (dept && mgr && formData[dept][mgr]) {
-        formData[dept][mgr].forEach(e => {
+      if (mgr && dept && formData[mgr][dept]) {
+        formData[mgr][dept].forEach(e => {
           empSel.innerHTML += `<option value="${e}">${e}</option>`;
         });
         empSel.disabled = false;
@@ -433,8 +435,8 @@
 
     const payload = {
       periode: form.periode.value,
-      department: form.department.value,
       manager: form.manager.value,
+      department: form.department.value,
       employee: form.employee.value,
       q1: form.q1.value,
       q2: form.q2.value,
@@ -473,5 +475,6 @@
   </script>
 </body>
 </html>
+
 
 
