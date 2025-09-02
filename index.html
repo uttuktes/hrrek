@@ -11,7 +11,7 @@
     <h1 class="text-2xl font-bold mb-4 text-center">Form Evaluasi Kinerja</h1>
 
     <!-- Form POST langsung ke Apps Script dengan iframe -->
-    <form action="https://script.google.com/macros/s/AKfycby76JrP0wTE3IBWKZfT8SrJVo3p2iSiVpQXjBgic3WyTrp24j4HVGAjGdbKc1gpyVU/exec"
+    <form action="https://script.google.com/macros/s/AKfycbzOqgNBBul7p_GBbVtxzXTQ8m-gkM74ES8xSb5ODSpI17LEKphEPxZseGnqbnALsQAc/exec"
           method="POST"
           target="hidden_iframe"
           onsubmit="setTimeout(() => { alert('Data berhasil dikirim!'); this.reset(); }, 500);">
@@ -84,7 +84,7 @@
 
   <script>
     // Script untuk load data Departemen, Manager, Karyawan via JSONP
-    const API_URL = "https://script.google.com/macros/s/AKfycby76JrP0wTE3IBWKZfT8SrJVo3p2iSiVpQXjBgic3WyTrp24j4HVGAjGdbKc1gpyVU/exec";
+    const API_URL = "https://script.google.com/macros/s/AKfycbzOqgNBBul7p_GBbVtxzXTQ8m-gkM74ES8xSb5ODSpI17LEKphEPxZseGnqbnALsQAc/exec";
 
     let formData = {};
 
@@ -144,3 +144,4 @@
   </script>
 </body>
 </html>
+
