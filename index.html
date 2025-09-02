@@ -386,21 +386,33 @@ mgrSel.disabled = false;
     }
 
       document.getElementById("manager").addEventListener("change", function() {
-const mgr = this.value;
-const deptSel = document.getElementById("department");
-const empSel = document.getElementById("employee");
-deptSel.innerHTML = "<option value=''>Pilih Departemen</option>";
-empSel.innerHTML = "<option value=''>Pilih Karyawan</option>";
-deptSel.disabled = true;
-empSel.disabled = true;
+  const mgr = this.value;
+  const deptSel = document.getElementById("department");
+  const empSel = document.getElementById("employee");
 
-      if (mgr && formData[mgr]) {
-Object.keys(formData[mgr]).forEach(d => {
-deptSel.innerHTML += `<option value="${d}">${d}</option>`;
+  deptSel.innerHTML = "<option value=''>Pilih Departemen</option>";
+  empSel.innerHTML = "<option value=''>Pilih Karyawan</option>";
+  deptSel.disabled = true;
+  empSel.disabled = true;
+
+  if (mgr && formData[mgr]) {
+    const depts = Object.keys(formData[mgr]);
+    if (depts.length > 0) {
+      // Ambil departemen pertama (asumsi 1 atasan = 1 departemen)
+      const firstDept = depts[0];
+      deptSel.innerHTML = `<option value=\"${firstDept}\">${firstDept}</option>`;
+      deptSel.value = firstDept;
+      deptSel.disabled = true; // kunci departemen, tidak bisa dipilih
+
+      // Isi langsung karyawan sesuai atasan & dept pertama
+      formData[mgr][firstDept].forEach(e => {
+        empSel.innerHTML += `<option value=\"${e}\">${e}</option>`;
+      });
+      empSel.disabled = false;
+    }
+  }
 });
-deptSel.disabled = false;
-      }
-    });
+
 
     document.getElementById("department").addEventListener("change", function() {
       const dept = document.getElementById("manager").value;
