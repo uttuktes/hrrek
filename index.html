@@ -77,7 +77,7 @@
       .space-y-3 {
         padding: 1rem;
       }
-    
+    }
   </style>
   
 </head>
@@ -85,7 +85,7 @@
   <div class="max-w-4xl mx-auto bg-white p-8 shadow-lg rounded-lg mt-1">
     <img src="https://media.licdn.com/dms/image/v2/D4E3DAQHdQ8hI0F8kFw/image-scale_191_1128/image-scale_191_1128/0/1729146506484/espera_satya_cover?e=2147483647&v=beta&t=Li35iFgVbilg53Our-rLWfp4cdXEVmF1ZzX6mRVCLfw"
        alt="Espera Satya"
-       class="w-full h-32 object-cover object-right rounded-t-lg">     
+       class="w-full h-32 object-cover rounded-t-lg">     
     <h2 class="text-2xl font-bold mb-6 text-center">FORMULIR EVALUASI KINERJA</h2>
 
     <form id="evaluationForm" class="space-y-6">
@@ -100,13 +100,6 @@
         </select>
       </div>
 
-	<div>
-        <label class="block font-semibold">Atasan</label>
-        <select id="manager" name="manager" class="animated-dropdown mt-1 block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-blue-600" required>
-          <option value="">Pilih Atasan</option>
-        </select>
-      </div>
-
       <div>
         <label class="block font-semibold">Departemen</label>
         <select id="department" name="department" class="animated-dropdown mt-1 block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-blue-600" required>
@@ -115,8 +108,15 @@
       </div>
 
       <div>
+        <label class="block font-semibold">Atasan</label>
+        <select id="manager" name="manager" class="animated-dropdown mt-1 block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-blue-600" required disabled>
+          <option value="">Pilih Atasan</option>
+        </select>
+      </div>
+
+      <div>
         <label class="block font-semibold">Karyawan</label>
-        <select id="employee" name="employee" class="animated-dropdown mt-1 block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-blue-600" required>
+        <select id="employee" name="employee" class="animated-dropdown mt-1 block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-blue-600" required disabled>
           <option value="">Pilih Karyawan</option>
         </select>
       </div>
@@ -368,15 +368,13 @@
     let formData = {};
 
     function loadData(data) {
-formData = data;
-const mgrSel = document.getElementById("manager");
-mgrSel.innerHTML = "<option value=''>Pilih Atasan</option>";
+      formData = data;
+      const deptSel = document.getElementById("department");
+      deptSel.innerHTML = "<option value=''>Pilih Departemen</option>";
 
-
-Object.keys(data).forEach(m => {
-mgrSel.innerHTML += `<option value="${m}">${m}</option>`;
-});
-mgrSel.disabled = false;
+      Object.keys(data).forEach(d => {
+        deptSel.innerHTML += `<option value="${d}">${d}</option>`;
+      });
     }
 
     function getDataJSONP() {
@@ -385,44 +383,32 @@ mgrSel.disabled = false;
       document.body.appendChild(script);
     }
 
-      document.getElementById("manager").addEventListener("change", function() {
-  const mgr = this.value;
-  const deptSel = document.getElementById("department");
-  const empSel = document.getElementById("employee");
+      document.getElementById("department").addEventListener("change", function() {
+      const val = this.value;
+      const mgrSel = document.getElementById("manager");
+      const empSel = document.getElementById("employee");
+      mgrSel.innerHTML = "<option value=''>Pilih Atasan</option>";
+      empSel.innerHTML = "<option value=''>Pilih Karyawan</option>";
+      mgrSel.disabled = true;
+      empSel.disabled = true;
 
-  deptSel.innerHTML = "<option value=''>Pilih Departemen</option>";
-  empSel.innerHTML = "<option value=''>Pilih Karyawan</option>";
-  deptSel.disabled = true;
-  empSel.disabled = true;
+      if (val && formData[val]) {
+        Object.keys(formData[val]).forEach(m => {
+          mgrSel.innerHTML += `<option value="${m}">${m}</option>`;
+        });
+        mgrSel.disabled = false;
+      }
+    });
 
-  if (mgr && formData[mgr]) {
-    const depts = Object.keys(formData[mgr]);
-    if (depts.length > 0) {
-      // Ambil departemen pertama (asumsi 1 atasan = 1 departemen)
-      const firstDept = depts[0];
-      deptSel.innerHTML = `<option value=\"${firstDept}\">${firstDept}</option>`;
-      deptSel.value = firstDept;
-      deptSel.disabled = true; // kunci departemen, tidak bisa dipilih
-
-      // Isi langsung karyawan sesuai atasan & dept pertama
-      formData[mgr][firstDept].forEach(e => {
-        empSel.innerHTML += `<option value=\"${e}\">${e}</option>`;
-      });
-      empSel.disabled = false;
-    }
-  }
-});
-
-
-    document.getElementById("department").addEventListener("change", function() {
-      const dept = document.getElementById("manager").value;
+    document.getElementById("manager").addEventListener("change", function() {
+      const dept = document.getElementById("department").value;
       const mgr = this.value;
       const empSel = document.getElementById("employee");
       empSel.innerHTML = "<option value=''>Pilih Karyawan</option>";
       empSel.disabled = true;
 
-      if (mgr && dept && formData[mgr][dept]) {
-        formData[mgr][dept].forEach(e => {
+      if (dept && mgr && formData[dept][mgr]) {
+        formData[dept][mgr].forEach(e => {
           empSel.innerHTML += `<option value="${e}">${e}</option>`;
         });
         empSel.disabled = false;
@@ -447,8 +433,8 @@ mgrSel.disabled = false;
 
     const payload = {
       periode: form.periode.value,
-      manager: form.manager.value,
       department: form.department.value,
+      manager: form.manager.value,
       employee: form.employee.value,
       q1: form.q1.value,
       q2: form.q2.value,
@@ -487,9 +473,4 @@ mgrSel.disabled = false;
   </script>
 </body>
 </html>
-
-
-
-
-
 
