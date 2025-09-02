@@ -101,7 +101,7 @@
       </div>
 
 	<div>
-        <label class="block font-semibold">Penilai</label>
+        <label class="block font-semibold">Atasan</label>
         <select id="manager" name="manager" class="animated-dropdown mt-1 block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-blue-600" required disabled>
           <option value="">Pilih Atasan</option>
         </select>
@@ -109,8 +109,7 @@
 
       <div>
         <label class="block font-semibold">Departemen</label>
-        <select id="department" name="department" class="animated-dropdown mt-1 block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-blue-600" required
-			required disabled>
+        <select id="department" name="department" class="animated-dropdown mt-1 block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-blue-600" required>
           <option value="">Pilih Departemen</option>
         </select>
       </div>
@@ -387,49 +386,36 @@ mgrSel.disabled = false;
     }
 
       document.getElementById("manager").addEventListener("change", function() {
-  const mgr = this.value;
-  const deptSel = document.getElementById("department");
-  const empSel = document.getElementById("employee");
+const mgr = this.value;
+const deptSel = document.getElementById("department");
+const empSel = document.getElementById("employee");
+deptSel.innerHTML = "<option value=''>Pilih Departemen</option>";
+empSel.innerHTML = "<option value=''>Pilih Karyawan</option>";
+deptSel.disabled = true;
+empSel.disabled = true;
 
-  deptSel.innerHTML = "<option value=''>Pilih Departemen</option>";
-  empSel.innerHTML = "<option value=''>Pilih Karyawan</option>";
-  deptSel.disabled = true;
-  empSel.disabled = true;
-
-  if (mgr && formData[mgr]) {
-    const depts = Object.keys(formData[mgr]);
-    if (depts.length > 0) {
-      // Ambil departemen pertama (asumsi 1 atasan = 1 departemen)
-      const firstDept = depts[0];
-      deptSel.innerHTML = `<option value=\"${firstDept}\">${firstDept}</option>`;
-      deptSel.value = firstDept;
-      deptSel.disabled = true; // kunci departemen, tidak bisa dipilih
-
-      // Isi langsung karyawan sesuai atasan & dept pertama
-      formData[mgr][firstDept].forEach(e => {
-        empSel.innerHTML += `<option value=\"${e}\">${e}</option>`;
-      });
-      empSel.disabled = false;
-    }
-  }
+      if (mgr && formData[mgr]) {
+Object.keys(formData[mgr]).forEach(d => {
+deptSel.innerHTML += `<option value="${d}">${d}</option>`;
 });
-
+deptSel.disabled = false;
+      }
+    });
 
     document.getElementById("department").addEventListener("change", function() {
-  const mgr = document.getElementById("manager").value;
-  const dept = this.value;
-  const empSel = document.getElementById("employee");
-  empSel.innerHTML = "<option value=''>Pilih Karyawan</option>";
-  empSel.disabled = true;
+      const dept = document.getElementById("manager").value;
+      const mgr = this.value;
+      const empSel = document.getElementById("employee");
+      empSel.innerHTML = "<option value=''>Pilih Karyawan</option>";
+      empSel.disabled = true;
 
-  if (mgr && dept && formData[mgr][dept]) {
-    formData[mgr][dept].forEach(e => {
-      empSel.innerHTML += `<option value="${e}">${e}</option>`;
+      if (mgr && dept && formData[mgr][dept]) {
+        formData[mgr][dept].forEach(e => {
+          empSel.innerHTML += `<option value="${e}">${e}</option>`;
+        });
+        empSel.disabled = false;
+      }
     });
-    empSel.disabled = false;
-  }
-});
-
    
   document.getElementById("evaluationForm").addEventListener("submit", async function(e) {
     e.preventDefault();
@@ -489,9 +475,6 @@ mgrSel.disabled = false;
   </script>
 </body>
 </html>
-
-
-
 
 
 
