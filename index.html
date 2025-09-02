@@ -363,7 +363,7 @@
 
   <script>
   
-    const API_URL = "https://script.google.com/macros/s/AKfycbzlDhKUQ_ls9UN9chNzyQBB_XD4gS-UM2o0s42RiNBPj8ORAaU_YIv8BUcU7MceU0_6/exec";
+    const API_URL = "https://script.google.com/macros/s/AKfycbxKEtwNnZH08rrAz7YNKwnbhYeB8CgsVXjnO3213Ia2LowRmESF5yfTQqImB1fG6_yK/exec";
     let formData = {};
 
     function loadData(data) {
@@ -459,12 +459,15 @@ mgrSel.disabled = false;
     };
 
     try {
-      await fetch(API_URL, {
-        method: "POST",
-        body: JSON.stringify(payload),
-        headers: { "Content-Type": "application/json" },
-        
-      });
+     await fetch(API_URL, {
+		method: "POST",
+ 		body: JSON.stringify(payload),
+  		headers: { 
+    	"Content-Type": "application/json"
+  		},
+  		mode: "cors"
+	});
+
 
       setTimeout(() => {
         alert("Data berhasil dikirim!");
@@ -484,6 +487,7 @@ mgrSel.disabled = false;
   </script>
 </body>
 </html>
+
 
 
 
