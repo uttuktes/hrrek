@@ -76,7 +76,8 @@
       /* padding jarak di tepi */
       .space-y-3 {
         padding: 1rem;
-      }    
+      }
+    
   </style>
   
 </head>
@@ -108,7 +109,8 @@
 
       <div>
         <label class="block font-semibold">Departemen</label>
-        <select id="department" name="department" class="animated-dropdown mt-1 block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-blue-600" required disabled>
+        <select id="department" name="department" class="animated-dropdown mt-1 block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-blue-600" required
+			required disabled>
           <option value="">Pilih Departemen</option>
         </select>
       </div>
@@ -363,7 +365,7 @@
 
   <script>
   
-    const API_URL = "https://script.google.com/macros/s/AKfycbw9RizxVdgajrIZSTU4qduE1RiEsYvxacHkz70Bp325tzdViPoYVbWe_AuDMHVOvfsb/exec";
+    const API_URL = "https://script.google.com/macros/s/AKfycbw6bCuxkLorNhlLgHwu5A0vITIVlnWEY_mvHIUlfmbG7F0Qep_eEbGhFXV1dTU-fetD/exec";
     let formData = {};
 
     function loadData(data) {
@@ -397,11 +399,13 @@ mgrSel.disabled = false;
   if (mgr && formData[mgr]) {
     const depts = Object.keys(formData[mgr]);
     if (depts.length > 0) {
+      // Ambil departemen pertama (asumsi 1 atasan = 1 departemen)
       const firstDept = depts[0];
       deptSel.innerHTML = `<option value=\"${firstDept}\">${firstDept}</option>`;
       deptSel.value = firstDept;
-      deptSel.disabled = true;
-      
+      deptSel.disabled = true; // kunci departemen, tidak bisa dipilih
+
+      // Isi langsung karyawan sesuai atasan & dept pertama
       formData[mgr][firstDept].forEach(e => {
         empSel.innerHTML += `<option value=\"${e}\">${e}</option>`;
       });
@@ -412,19 +416,20 @@ mgrSel.disabled = false;
 
 
     document.getElementById("department").addEventListener("change", function() {
-      const mgr = document.getElementById("manager").value;
-      const dept = this.value;
-      const empSel = document.getElementById("employee");
-      empSel.innerHTML = "<option value=''>Pilih Karyawan</option>";
-      empSel.disabled = true;
+  const mgr = document.getElementById("manager").value;
+  const dept = this.value;
+  const empSel = document.getElementById("employee");
+  empSel.innerHTML = "<option value=''>Pilih Karyawan</option>";
+  empSel.disabled = true;
 
-      if (mgr && dept && formData[mgr][dept]) {
-        formData[mgr][dept].forEach(e => {
-          empSel.innerHTML += `<option value="${e}">${e}</option>`;
-        });
-        empSel.disabled = false;
-      }
+  if (mgr && dept && formData[mgr][dept]) {
+    formData[mgr][dept].forEach(e => {
+      empSel.innerHTML += `<option value="${e}">${e}</option>`;
     });
+    empSel.disabled = false;
+  }
+});
+
    
   document.getElementById("evaluationForm").addEventListener("submit", async function(e) {
     e.preventDefault();
@@ -459,15 +464,12 @@ mgrSel.disabled = false;
     };
 
     try {
-     await fetch(API_URL, {
-		method: "POST",
- 		body: JSON.stringify(payload),
-  		headers: { 
-    	"Content-Type": "application/json"
-  		},
-  		
-	});
-
+      await fetch(API_URL, {
+        method: "POST",
+        body: JSON.stringify(payload),
+        headers: { "Content-Type": "application/json" },
+        mode: "no-cors"
+      });
 
       setTimeout(() => {
         alert("Data berhasil dikirim!");
@@ -487,18 +489,6 @@ mgrSel.disabled = false;
   </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
