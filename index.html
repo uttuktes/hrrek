@@ -364,7 +364,7 @@
   </div>
 
 	<script>
-  const API_URL = "https://script.google.com/macros/s/AKfycbwY9cfX5oYmRFWzNMw4NLCfJChHtmOEAsZkTgzTOYkx43SYren1aDHRpik3UFMiLmE/exec";
+  const API_URL = "https://script.google.com/macros/s/AKfycbx0fuUyZiI-sVjchicxgIo547j3tL9bdQedWZZ0B2Mt2sOJJA-W0wPiUVfxhYHN3Jg/exec";
   let formData = {};
 
   function loadData(data) {
@@ -463,13 +463,13 @@
       const result = await res.json();
 
       if (result.status === "success") {
-        alert("✅ Data berhasil dikirim!");
+        alert("Data berhasil dikirim!");
         form.reset();
       } else {
-        alert("⚠️ Gagal: " + result.message);
+        alert("Gagal: " + result.message);
       }
     } catch (err) {
-      alert("❌ Error: " + err.message);
+      alert("Error: " + err.message);
     } finally {
       submitBtn.disabled = false;
       submitBtn.innerHTML = originalText;
@@ -482,6 +482,7 @@
 	
 </body>
 </html>
+
 
 
 
