@@ -463,24 +463,25 @@ mgrSel.disabled = false;
     };
 
     try {
-      await fetch(API_URL, {
+      const res = await fetch(API_URL, {
         method: "POST",
         body: JSON.stringify(payload),
-        headers: { "Content-Type": "application/json" },
-        mode: "no-cors"
+        headers: { "Content-Type": "application/json" }
       });
 
-      setTimeout(() => {
-        alert("Data berhasil dikirim!");
-        form.reset();
-        submitBtn.disabled = false;
-        submitBtn.innerHTML = originalText;
-      }, 800);
+      const result = await res.json();
 
+      if (result.status === "success") {
+        alert("✅ Data berhasil dikirim!");
+        form.reset();
+      } else {
+        alert("⚠️ Gagal: " + result.message);
+      }
     } catch (err) {
+      alert("❌ Error: " + err.message);
+    } finally {
       submitBtn.disabled = false;
       submitBtn.innerHTML = originalText;
-      alert("Gagal kirim: " + err.message);
     }
   });
 
@@ -488,6 +489,7 @@ mgrSel.disabled = false;
   </script>
 </body>
 </html>
+
 
 
 
