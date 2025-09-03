@@ -363,73 +363,68 @@
     </form>
   </div>
 
-  <script>
-  
-    const API_URL = "https://script.google.com/macros/s/AKfycbzaJhErap38RCZZnipm43kcJ-WNjdjtGFaCs67wJ_jaKmWuidHsy_qJb5qkJ3BIv_ge/exec";
-    let formData = {};
+	<script>
+  const API_URL = "https://script.google.com/macros/s/AKfycbwmxpFaSq10-gkG6AyL51HS7T0Vmu39fgyXtta7BmiVknjQkVHFB0QcA7iqBk2UOYtg/exec";
+  let formData = {};
 
-    function loadData(data) {
-formData = data;
-const mgrSel = document.getElementById("manager");
-mgrSel.innerHTML = "<option value=''>Pilih Atasan</option>";
+  function loadData(data) {
+    formData = data;
+    const mgrSel = document.getElementById("manager");
+    mgrSel.innerHTML = "<option value=''>Pilih Atasan</option>";
 
-
-Object.keys(data).forEach(m => {
-mgrSel.innerHTML += `<option value="${m}">${m}</option>`;
-});
-mgrSel.disabled = false;
-    }
-
-    function getDataJSONP() {
-      const script = document.createElement("script");
-      script.src = API_URL + "?callback=loadData";
-      document.body.appendChild(script);
-    }
-
-      document.getElementById("manager").addEventListener("change", function() {
-  const mgr = this.value;
-  const deptSel = document.getElementById("department");
-  const empSel = document.getElementById("employee");
-
-  deptSel.innerHTML = "<option value=''>Pilih Departemen</option>";
-  empSel.innerHTML = "<option value=''>Pilih Karyawan</option>";
-  deptSel.disabled = true;
-  empSel.disabled = true;
-
-  if (mgr && formData[mgr]) {
-    const depts = Object.keys(formData[mgr]);
-    if (depts.length > 0) {
-      // Ambil departemen pertama (asumsi 1 atasan = 1 departemen)
-      const firstDept = depts[0];
-      deptSel.innerHTML = `<option value=\"${firstDept}\">${firstDept}</option>`;
-      deptSel.value = firstDept;
-      deptSel.disabled = true; // kunci departemen, tidak bisa dipilih
-
-      // Isi langsung karyawan sesuai atasan & dept pertama
-      formData[mgr][firstDept].forEach(e => {
-        empSel.innerHTML += `<option value=\"${e}\">${e}</option>`;
-      });
-      empSel.disabled = false;
-    }
+    Object.keys(data).forEach(m => {
+      mgrSel.innerHTML += `<option value="${m}">${m}</option>`;
+    });
+    mgrSel.disabled = false;
   }
-});
 
+  function getDataJSONP() {
+    const script = document.createElement("script");
+    script.src = API_URL + "?callback=loadData";
+    document.body.appendChild(script);
+  }
 
-    document.getElementById("department").addEventListener("change", function() {
-      const dept = document.getElementById("manager").value;
-      const mgr = this.value;
-      const empSel = document.getElementById("employee");
-      empSel.innerHTML = "<option value=''>Pilih Karyawan</option>";
-      empSel.disabled = true;
+  document.getElementById("manager").addEventListener("change", function() {
+    const mgr = this.value;
+    const deptSel = document.getElementById("department");
+    const empSel = document.getElementById("employee");
 
-      if (mgr && dept && formData[mgr][dept]) {
-        formData[mgr][dept].forEach(e => {
+    deptSel.innerHTML = "<option value=''>Pilih Departemen</option>";
+    empSel.innerHTML = "<option value=''>Pilih Karyawan</option>";
+    deptSel.disabled = true;
+    empSel.disabled = true;
+
+    if (mgr && formData[mgr]) {
+      const depts = Object.keys(formData[mgr]);
+      if (depts.length > 0) {
+        const firstDept = depts[0];
+        deptSel.innerHTML = `<option value="${firstDept}">${firstDept}</option>`;
+        deptSel.value = firstDept;
+        deptSel.disabled = true;
+
+        formData[mgr][firstDept].forEach(e => {
           empSel.innerHTML += `<option value="${e}">${e}</option>`;
         });
         empSel.disabled = false;
       }
-    });
-   
+    }
+  });
+
+  document.getElementById("department").addEventListener("change", function() {
+    const mgr = document.getElementById("manager").value;
+    const dept = this.value;
+    const empSel = document.getElementById("employee");
+    empSel.innerHTML = "<option value=''>Pilih Karyawan</option>";
+    empSel.disabled = true;
+
+    if (mgr && dept && formData[mgr][dept]) {
+      formData[mgr][dept].forEach(e => {
+        empSel.innerHTML += `<option value="${e}">${e}</option>`;
+      });
+      empSel.disabled = false;
+    }
+  });
+
   document.getElementById("evaluationForm").addEventListener("submit", async function(e) {
     e.preventDefault();
 
@@ -438,13 +433,7 @@ mgrSel.disabled = false;
     const originalText = submitBtn.innerHTML;
 
     submitBtn.disabled = true;
-    submitBtn.innerHTML = `
-      <svg class="animate-spin h-5 w-5 mr-2 inline-block text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
-      </svg>
-      Loading...
-    `;
+    submitBtn.innerHTML = `Loading...`;
 
     const payload = {
       periode: form.periode.value,
@@ -463,10 +452,12 @@ mgrSel.disabled = false;
     };
 
     try {
+      const formData = new URLSearchParams(payload).toString();
+
       const res = await fetch(API_URL, {
         method: "POST",
-        body: JSON.stringify(payload),
-        headers: { "Content-Type": "application/json" }
+        body: formData,
+        headers: { "Content-Type": "application/x-www-form-urlencoded" }
       });
 
       const result = await res.json();
@@ -485,10 +476,13 @@ mgrSel.disabled = false;
     }
   });
 
-    window.onload = getDataJSONP;
-  </script>
+  window.onload = getDataJSONP;
+</script>
+
+	
 </body>
 </html>
+
 
 
 
