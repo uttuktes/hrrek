@@ -1,3 +1,5 @@
+tolong buatkan JavaScript.gs di app script dengan url spreadsheet (https://docs.google.com/spreadsheets/d/1gxQyt86P5-nuDKFMvnNhLadFbcPZssydUxrv1OJkIPQ/edit?gid=12814804#gid=12814804), dan merujuk html berikut :
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -363,6 +365,7 @@
   </div>
 
   <script>
+  
     const API_URL = "https://script.google.com/macros/s/AKfycbzIVNJjYIpDPnIKtWmrghKtnlz07j48XWkHBpwFGswUvLXSDIIdwU1t2VXIwdBRWuSH/exec";
     let formData = {};
 
@@ -451,13 +454,16 @@
         method: "POST",
         body: JSON.stringify(payload),
         headers: { "Content-Type": "application/json" },
-        
+        mode: "no-cors"
       });
 
-	const result = await res.text();
-	alert("Response server: " + result);
+      setTimeout(() => {
+        alert("Data berhasil dikirim!");
+        form.reset();
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalText;
+      }, 800);
 
-      
     } catch (err) {
       submitBtn.disabled = false;
       submitBtn.innerHTML = originalText;
@@ -469,4 +475,3 @@
   </script>
 </body>
 </html>
-
