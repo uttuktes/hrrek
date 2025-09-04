@@ -85,7 +85,7 @@
   <div class="max-w-4xl mx-auto bg-white p-8 shadow-lg rounded-lg mt-1">
     <img src="https://media.licdn.com/dms/image/v2/D4E3DAQHdQ8hI0F8kFw/image-scale_191_1128/image-scale_191_1128/0/1729146506484/espera_satya_cover?e=2147483647&v=beta&t=Li35iFgVbilg53Our-rLWfp4cdXEVmF1ZzX6mRVCLfw"
        alt="Espera Satya"
-       class="w-full h-32 object-cover object-right rounded-t-lg">     
+       class="w-full h-32 object-cover rounded-t-lg">     
     <h2 class="text-2xl font-bold mb-6 text-center">FORMULIR EVALUASI KINERJA</h2>
 
     <form id="evaluationForm" class="space-y-6">
@@ -359,72 +359,76 @@
       <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded">
         Submit
       </button>
-    </div>
+	</div>
     </form>
   </div>
 
-	<script>
-  const API_URL = "https://script.google.com/macros/s/AKfycbwbjN72IeFWxHMaXoKil5ylH_SDyd4PEoB3LulK6Pot0QEdbtMU_AIhfd5HSV-zZ2zq/exec";
-  let formData = {};
+  <script>
+    const API_URL = "https://script.google.com/macros/s/AKfycbz9ySzGnd5j8FCMFhi-aFfP-rFo2ll-RHCB9pHLjVzl7Uk5unT9CCdyy_9T1tdimTZo/exec";
+    let formData = {};
 
-  function loadData(data) {
-    formData = data;
-    const mgrSel = document.getElementById("manager");
-    mgrSel.innerHTML = "<option value=''>Pilih Atasan</option>";
+    function loadData(data) {
+formData = data;
+const mgrSel = document.getElementById("manager");
+mgrSel.innerHTML = "<option value=''>Pilih Atasan</option>";
 
-    Object.keys(data).forEach(m => {
-      mgrSel.innerHTML += `<option value="${m}">${m}</option>`;
-    });
-    mgrSel.disabled = false;
+
+Object.keys(data).forEach(m => {
+mgrSel.innerHTML += `<option value="${m}">${m}</option>`;
+});
+mgrSel.disabled = false;
+    }
+
+    function getDataJSONP() {
+      const script = document.createElement("script");
+      script.src = API_URL + "?callback=loadData";
+      document.body.appendChild(script);
+    }
+
+      document.getElementById("manager").addEventListener("change", function() {
+  const mgr = this.value;
+  const deptSel = document.getElementById("department");
+  const empSel = document.getElementById("employee");
+
+  deptSel.innerHTML = "<option value=''>Pilih Departemen</option>";
+  empSel.innerHTML = "<option value=''>Pilih Karyawan</option>";
+  deptSel.disabled = true;
+  empSel.disabled = true;
+
+  if (mgr && formData[mgr]) {
+    const depts = Object.keys(formData[mgr]);
+    if (depts.length > 0) {
+      // Ambil departemen pertama (asumsi 1 atasan = 1 departemen)
+      const firstDept = depts[0];
+      deptSel.innerHTML = `<option value=\"${firstDept}\">${firstDept}</option>`;
+      deptSel.value = firstDept;
+      deptSel.disabled = true; // kunci departemen, tidak bisa dipilih
+
+      // Isi langsung karyawan sesuai atasan & dept pertama
+      formData[mgr][firstDept].forEach(e => {
+        empSel.innerHTML += `<option value=\"${e}\">${e}</option>`;
+      });
+      empSel.disabled = false;
+    }
   }
+});
 
-  function getDataJSONP() {
-    const script = document.createElement("script");
-    script.src = API_URL + "?callback=loadData";
-    document.body.appendChild(script);
-  }
 
-  document.getElementById("manager").addEventListener("change", function() {
-    const mgr = this.value;
-    const deptSel = document.getElementById("department");
-    const empSel = document.getElementById("employee");
+    document.getElementById("department").addEventListener("change", function() {
+      const dept = document.getElementById("manager").value;
+      const mgr = this.value;
+      const empSel = document.getElementById("employee");
+      empSel.innerHTML = "<option value=''>Pilih Karyawan</option>";
+      empSel.disabled = true;
 
-    deptSel.innerHTML = "<option value=''>Pilih Departemen</option>";
-    empSel.innerHTML = "<option value=''>Pilih Karyawan</option>";
-    deptSel.disabled = true;
-    empSel.disabled = true;
-
-    if (mgr && formData[mgr]) {
-      const depts = Object.keys(formData[mgr]);
-      if (depts.length > 0) {
-        const firstDept = depts[0];
-        deptSel.innerHTML = `<option value="${firstDept}">${firstDept}</option>`;
-        deptSel.value = firstDept;
-        deptSel.disabled = true;
-
-        formData[mgr][firstDept].forEach(e => {
+      if (mgr && dept && formData[mgr][dept]) {
+        formData[mgr][dept].forEach(e => {
           empSel.innerHTML += `<option value="${e}">${e}</option>`;
         });
         empSel.disabled = false;
       }
-    }
-  });
-
-  document.getElementById("department").addEventListener("change", function() {
-    const mgr = document.getElementById("manager").value;
-    const dept = this.value;
-    const empSel = document.getElementById("employee");
-    empSel.innerHTML = "<option value=''>Pilih Karyawan</option>";
-    empSel.disabled = true;
-
-    if (mgr && dept && formData[mgr][dept]) {
-      formData[mgr][dept].forEach(e => {
-        empSel.innerHTML += `<option value="${e}">${e}</option>`;
-      });
-      empSel.disabled = false;
-    }
-  });
-
+    });
+   
   document.getElementById("evaluationForm").addEventListener("submit", async function(e) {
     e.preventDefault();
 
@@ -433,7 +437,13 @@
     const originalText = submitBtn.innerHTML;
 
     submitBtn.disabled = true;
-    submitBtn.innerHTML = `Loading...`;
+    submitBtn.innerHTML = `
+      <svg class="animate-spin h-5 w-5 mr-2 inline-block text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+      </svg>
+      Loading...
+    `;
 
     const payload = {
       periode: form.periode.value,
@@ -452,41 +462,31 @@
     };
 
     try {
-      const formData = new URLSearchParams(payload).toString();
-
-      const res = await fetch(API_URL, {
+      await fetch(API_URL, {
         method: "POST",
-        body: formData,
-        headers: { "Content-Type": "application/x-www-form-urlencoded" }
+        body: JSON.stringify(payload),
+        headers: { "Content-Type": "application/json" },
+        mode: "no-cors"
       });
 
-      const result = await res.json();
-
-      if (result.status === "success") {
+      setTimeout(() => {
         alert("Data berhasil dikirim!");
         form.reset();
-      } else {
-        alert("Gagal: " + result.message);
-      }
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalText;
+      }, 800);
+
     } catch (err) {
-      alert("Error: " + err.message);
-    } finally {
       submitBtn.disabled = false;
       submitBtn.innerHTML = originalText;
+      alert("Gagal kirim: " + err.message);
     }
   });
 
-  window.onload = getDataJSONP;
-</script>
-
-	
+    window.onload = getDataJSONP;
+  </script>
 </body>
 </html>
-
-
-
-
-
 
 
 
