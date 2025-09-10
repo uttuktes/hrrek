@@ -349,7 +349,7 @@
    
           <div>
               <label class="block text-sm font-semibold text-gray-700 mb-1 underline">Evaluasi Karyawan :</label>
-              <textarea id="eval" name="eval" rows="4" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-blue-600" placeholder="Hal-hal yang perlu diperbaiki terkait tampilan kinerja karyawan . . ." Required></textarea>
+              <textarea id="eval" name="eval" rows="4" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-blue-600" placeholder="Hal-hal yang perlu diperbaiki terkait tampilan kinerja karyawan . . ." required></textarea>
          </div>
       </div>
     </div>
@@ -362,7 +362,7 @@
   </div>
 
   <script>
-    const API_URL = https://script.google.com/macros/s/AKfycby6ULoLZjYNfNo5rajGItRnE5g--oCEcmzYiJtd5KEL984WiQJM4PxaspjhwX0uC5t-/exec
+    const API_URL = "https://script.google.com/macros/s/AKfycby6ULoLZjYNfNo5rajGItRnE5g--oCEcmzYiJtd5KEL984WiQJM4PxaspjhwX0uC5t-/exec"
     let formData = {};
 
     function loadData(data) {
@@ -413,8 +413,8 @@ mgrSel.disabled = false;
 
 
     document.getElementById("department").addEventListener("change", function() {
-      const dept = document.getElementById("department").value;
-      const mgr = this.value;
+      const mgr = document.getElementById("manager").value;
+      const dept = this.value;
       const empSel = document.getElementById("employee");
       empSel.innerHTML = "<option value=''>Pilih Karyawan</option>";
       empSel.disabled = true;
@@ -485,6 +485,7 @@ mgrSel.disabled = false;
   </script>
 </body>
 </html>
+
 
 
 
