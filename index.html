@@ -100,14 +100,14 @@
 
 	<div>
         <label class="block font-semibold">Nama Penilai</label>
-        <select id="manager" name="manager" class="animated-dropdown mt-1 block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-blue-600" required disabled>
+        <select id="manager" name="manager" class="animated-dropdown mt-1 block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-blue-600" required>
           <option value="">Pilih Penilai</option>
         </select>
       </div>
 
       <div>
         <label class="block font-semibold">Departemen</label>
-        <select id="department" name="department" class="animated-dropdown mt-1 block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-blue-600" required>
+        <select id="department" name="department" class="animated-dropdown mt-1 block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-blue-600" required disabled>
           <option value="">Pilih Departemen</option>
         </select>
       </div>
@@ -349,7 +349,7 @@
    
           <div>
               <label class="block text-sm font-semibold text-gray-700 mb-1 underline">Evaluasi Karyawan :</label>
-              <textarea id="eval" name="eval" rows="4" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-blue-600" placeholder="Hal-hal yang perlu diperbaiki terkait tampilan kinerja karyawan . . ."></textarea>
+              <textarea id="eval" name="eval" rows="4" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-blue-600" placeholder="Hal-hal yang perlu diperbaiki terkait tampilan kinerja karyawan . . ." Required></textarea>
          </div>
       </div>
     </div>
@@ -362,7 +362,7 @@
   </div>
 
   <script>
-    const API_URL = https://script.google.com/macros/s/AKfycbz9AZlhY1H9_baxKlzZaUHLQS3hOhjY02ZSztOWq6lrNFmZWtDHPMmFKItsVFrF7dAA/exec
+    const API_URL = https://script.google.com/macros/s/AKfycby6ULoLZjYNfNo5rajGItRnE5g--oCEcmzYiJtd5KEL984WiQJM4PxaspjhwX0uC5t-/exec
     let formData = {};
 
     function loadData(data) {
@@ -485,6 +485,7 @@ mgrSel.disabled = false;
   </script>
 </body>
 </html>
+
 
 
 
