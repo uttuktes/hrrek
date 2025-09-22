@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Form Evaluasi Kinerja</title>
   <script src="https://cdn.tailwindcss.com"></script>
+
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
   <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
   <style>
@@ -75,9 +76,7 @@
 
       <div>
         <label class="block font-semibold">Departemen</label>
-        <select id="department" name="department" class="mt-1 block w-full px-3 py-2 border rounded-md bg-gray-100" required disabled>
-          <option value="">Pilih Departemen</option>
-        </select>
+        <input id="department" name="department" type="text" class="mt-1 block w-full px-3 py-2 border rounded-md bg-gray-100 text-black" readonly>
       </div>
 
       <div id="employeeNameContainer" class="mt-4 hidden">
@@ -86,16 +85,14 @@
         <div class="text-sm text-gray-600 text-center mt-1" id="progressText">(1 / 1)</div>
       </div>
 
-      
       <div id="employeeSlides" class="hidden">
         <div class="swiper">
           <div class="swiper-wrapper" id="slidesWrapper"></div>
-          
           <div class="swiper-button-prev"></div>
           <div class="swiper-button-next"></div>
           <div class="swiper-pagination"></div>
         </div>
-        
+
         <div class="text-center mt-4">
           <button id="submitAllBtn" type="button" class="bg-blue-600 text-white px-6 py-2 rounded hidden">
             Submit All
@@ -107,26 +104,26 @@
 
   <div id="successModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden z-50">
     <div class="bg-white p-6 rounded-lg shadow-lg text-center" id="successContent">
-      <h3 class="text-lg font-bold mb-2">Semua data berhasil dikirim !</h3>
-      <p class="text-gray-600">Terimakasih atas kerjasamanya :D
+      <h3 class="text-lg font-bold mb-2">Data berhasil dikirim!</h3>
+      <p class="text-gray-600">Terimakasih atas kerjasamanya :D</p>
     </div>
   </div>
 
   <script>
-    const API_URL = "https://script.google.com/macros/s/AKfycbxWcJbpQOrn7RV3wGHc3F-EfuBvurSjYL32nc3w7JGjGFPh0aZAqRm4MPWUJpeiiqFT/exec";
+    const API_URL = "https://script.google.com/macros/s/AKfycbzloyCDnlU01TFUv19TfCAW1QK64YZM7PMdk7uLy2T7RcZVzxDkrbGnF15uIr-1VP8J/exec";
     let formData = {};
     let employees = [];
     let swiper;
 
     const QUESTIONS = [
-		"Disiplin dalam melakukan pekerjaan sesuai instruksi kerja yang ada",
-		"Trampil dalam mengerjakan tugas",
-		"Sigap dalam menjalankan pekerjaan saya",
-		"Tidak banyak mengobrol dalam jam kerja / membuang-buang waktu untuk kepentingan di luar pekerjaan",
-		"Siap dan Mampu bekerjasama dengan rekan sekerja",
-		"Dalam bekerja, siap melaksanakan perintah atasan (misal: siap bila ditugaskan lembur dan perintah lain terkait pekerjaan)",
-		"Menjaga kebersihan mesin dan atau lingkungan kerja (termasuk tidak makan / minum di area lingkungan kerjanya)",
-		"Memahami bahwa bekerja adalah juga ibadah"
+      "Disiplin dalam melakukan pekerjaan sesuai instruksi kerja yang ada",
+      "Trampil dalam mengerjakan tugas",
+      "Sigap dalam menjalankan pekerjaan saya",
+      "Tidak banyak mengobrol dalam jam kerja / membuang-buang waktu untuk kepentingan di luar pekerjaan",
+      "Siap dan Mampu bekerjasama dengan rekan sekerja",
+      "Dalam bekerja, siap melaksanakan perintah atasan (misal: siap bila ditugaskan lembur dan perintah lain terkait pekerjaan)",
+      "Menjaga kebersihan mesin dan atau lingkungan kerja (termasuk tidak makan / minum di area lingkungan kerjanya)",
+      "Memahami bahwa bekerja adalah juga ibadah"
     ];
 
     function loadData(data) {
@@ -145,11 +142,10 @@
       document.body.appendChild(script);
     }
 
-    document.getElementById("manager").addEventListener("change", function() {
+    document.getElementById("manager").addEventListener("change", async function() {
       const mgr = this.value;
-      const deptSel = document.getElementById("department");
-      deptSel.innerHTML = "<option value=''>Pilih Departemen</option>";
-      deptSel.disabled = true;
+      const deptInput = document.getElementById("department");
+      deptInput.value = "";
       document.getElementById("employeeSlides").classList.add("hidden");
       document.getElementById("employeeNameContainer").classList.add("hidden");
 
@@ -157,12 +153,22 @@
         const depts = Object.keys(formData[mgr]);
         if (depts.length > 0) {
           const firstDept = depts[0];
-          deptSel.innerHTML = `<option value="${firstDept}">${firstDept}</option>`;
-          deptSel.value = firstDept;
-          deptSel.disabled = true;
+          deptInput.value = firstDept;
 
           employees = formData[mgr][firstDept];
-          generateSlides(employees);
+
+          const periode = document.querySelector("select[name='periode']").value;
+          let doneList = [];
+          try {
+            const statusUrl = API_URL + `?action=status&period=${encodeURIComponent(periode)}&manager=${encodeURIComponent(mgr)}&department=${encodeURIComponent(firstDept)}`;
+            const res = await fetch(statusUrl);
+            const data = await res.json();
+            doneList = data.done || [];
+          } catch (err) {
+            console.error("Gagal cek status", err);
+          }
+
+          generateSlides(employees, doneList);
         }
       }
     });
@@ -175,13 +181,18 @@
       if (idx === employees.length - 1) submitBtn.classList.remove('hidden'); else submitBtn.classList.add('hidden');
     }
 
-    function generateSlides(employees) {
+    function generateSlides(employees, doneList=[]) {
       const wrapper = document.getElementById("slidesWrapper");
       wrapper.innerHTML = "";
 
       employees.forEach((emp, idx) => {
+        const isDone = doneList.includes(emp);
         wrapper.innerHTML += `
           <div class="swiper-slide p-4">
+            <div class="flex items-center mb-2">
+              <p class="font-semibold flex-1">${emp}</p>
+              ${isDone ? '<span class="text-green-600 font-bold ml-2">U+2714</span>' : ''}
+            </div>
             <p class="font-semibold mb-2 underline">Materi Evaluasi :</p>
             ${QUESTIONS.map((text, qIdx) => `
               <div class="mb-3">
@@ -195,7 +206,7 @@
                 </div>
               </div>
             `).join(" ")}
-      		<p class="font-semibold mb-2 underline">Evaluasi Karyawan :</p>
+            <p class="font-semibold mb-2 underline">Evaluasi Karyawan :</p>
             <textarea name="eval_${idx}" rows="3" class="w-full border p-2 mt-2" placeholder="Hal-hal yang perlu diperbaiki terkait tampilan kinerja karyawan . . ."></textarea>
           </div>
         `;
@@ -264,7 +275,7 @@
         btn.disabled = false;
       }
     });
-
+    
     document.getElementById("successModal").addEventListener("click", function(e) {
       if (e.target === this) {
         this.classList.add("hidden");
