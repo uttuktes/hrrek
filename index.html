@@ -229,7 +229,7 @@
       });
     }
 
-    document.getElementById("submitAllBtn").addEventListener("click", async (e) => {
+   document.getElementById("submitAllBtn").addEventListener("click", async (e) => {
       const btn = e.target;
       btn.innerText = "Loading . . .";
       btn.disabled = true;
@@ -238,15 +238,29 @@
       const manager = document.getElementById("manager").value;
       const department = document.getElementById("department").value;
 
+      let incomplete = [];
       const payload = employees.map((emp, idx) => {
         let answers = {};
+        let isComplete = true;
+
         for (let q=1; q<=QUESTIONS.length; q++) {
-          answers[`me${q}`] = document.querySelector(`input[name='me${q}_${idx}']:checked`)?.value || "";
+          const val = document.querySelector(`input[name='me${q}_${idx}']:checked`)?.value || "";
+          if (!val) isComplete = false;
+          answers[`me${q}`] = val;
         }
+
+        const evalText = document.querySelector(`textarea[name='eval_${idx}']`).value;
+        if (!evalText) isComplete = false;
+        if (!periode) isComplete = false;
+
+        if (!isComplete) {
+          incomplete.push(emp);
+        }
+
         return {
           periode, manager, department, employee: emp,
           ...answers,
-          eval: document.querySelector(`textarea[name='eval_${idx}']`).value
+          eval: evalText
         };
       });
 
@@ -259,7 +273,26 @@
         });
 
         setTimeout(() => {
-          document.getElementById("successModal").classList.remove("hidden");
+          const modal = document.getElementById("successModal");
+          const msgBox = document.getElementById("successContent");
+          modal.classList.remove("hidden");
+
+          // reset isi modal
+          msgBox.innerHTML = `
+            <h3 class="text-lg font-bold mb-2">Data berhasil dikirim!</h3>
+            <p class="text-gray-600">Terimakasih atas kerjasamanya :D</p>
+          `;
+
+          if (incomplete.length > 0) {
+            msgBox.innerHTML += `
+              <div class="mt-4 text-left">
+                <p class="text-red-600 font-semibold">⚠️ Data berikut belum lengkap:</p>
+                <ul class="list-disc list-inside text-sm text-gray-700">
+                  ${incomplete.map(name => `<li>${name}</li>`).join("")}
+                </ul>
+              </div>`;
+          }
+
           document.getElementById("evaluationForm").reset();
           if (employees.length > 0) {
             updateEmployeeDisplay(0);
@@ -286,8 +319,3 @@
   </script>
 </body>
 </html>
-
-
-
-
-
