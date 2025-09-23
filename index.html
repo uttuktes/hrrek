@@ -230,92 +230,86 @@
     }
 
    document.getElementById("submitAllBtn").addEventListener("click", async (e) => {
-      const btn = e.target;
-      btn.innerText = "Loading . . .";
-      btn.disabled = true;
+  const btn = e.target;
+  btn.innerText = "Loading . . .";
+  btn.disabled = true;
 
-      const periode = document.querySelector("select[name='periode']").value;
-      const manager = document.getElementById("manager").value;
-      const department = document.getElementById("department").value;
+  const periode = document.querySelector("select[name='periode']").value;
+  const manager = document.getElementById("manager").value;
+  const department = document.getElementById("department").value;
 
-      let incomplete = [];
-      const payload = employees.map((emp, idx) => {
-        let answers = {};
-        let isComplete = true;
+  let incomplete = [];
+  let completeData = [];
 
-        for (let q=1; q<=QUESTIONS.length; q++) {
-          const val = document.querySelector(`input[name='me${q}_${idx}']:checked`)?.value || "";
-          if (!val) isComplete = false;
-          answers[`me${q}`] = val;
-        }
+  employees.forEach((emp, idx) => {
+    let answers = {};
+    let isComplete = true;
 
-        const evalText = document.querySelector(`textarea[name='eval_${idx}']`).value;
-        if (!evalText) isComplete = false;
-        if (!periode) isComplete = false;
+    for (let q=1; q<=QUESTIONS.length; q++) {
+      const val = document.querySelector(`input[name='me${q}_${idx}']:checked`)?.value || "";
+      if (!val) isComplete = false;
+      answers[`me${q}`] = val;
+    }
 
-        if (!isComplete) {
-          incomplete.push(emp);
-        }
+    const evalText = document.querySelector(`textarea[name='eval_${idx}']`).value;
+    if (!evalText) isComplete = false;
+    if (!periode) isComplete = false;
 
-        return {
-          periode, manager, department, employee: emp,
-          ...answers,
-          eval: evalText
-        };
+    if (isComplete) {
+      completeData.push({
+        periode, manager, department, employee: emp,
+        ...answers,
+        eval: evalText
       });
+    } else {
+      incomplete.push(emp);
+    }
+  });
 
-      try {
-        await fetch(API_URL, {
-          method: "POST",
-          body: JSON.stringify(payload),
-          headers: { "Content-Type": "application/json" },
-          mode: "no-cors"
-        });
+  try {
+    if (completeData.length > 0) {
+      await fetch(API_URL, {
+        method: "POST",
+        body: JSON.stringify(completeData),
+        headers: { "Content-Type": "application/json" },
+        mode: "no-cors"
+      });
+    }
 
-        setTimeout(() => {
-          const modal = document.getElementById("successModal");
-          const msgBox = document.getElementById("successContent");
-          modal.classList.remove("hidden");
+    setTimeout(() => {
+      const modal = document.getElementById("successModal");
+      const msgBox = document.getElementById("successContent");
+      modal.classList.remove("hidden");
 
-          // reset isi modal
-          msgBox.innerHTML = `
-            <h3 class="text-lg font-bold mb-2">Data berhasil dikirim!</h3>
-            <p class="text-gray-600">Terimakasih atas kerjasamanya :D</p>
-          `;
+      // reset isi modal
+      msgBox.innerHTML = `
+        <h3 class="text-lg font-bold mb-2">Data berhasil dikirim!</h3>
+        <p class="text-gray-600">Terimakasih atas kerjasamanya :D</p>
+      `;
 
-          if (incomplete.length > 0) {
-            msgBox.innerHTML += `
-              <div class="mt-4 text-left">
-                <p class="text-red-600 font-semibold">⚠️ Data berikut belum lengkap:</p>
-                <ul class="list-disc list-inside text-sm text-gray-700">
-                  ${incomplete.map(name => `<li>${name}</li>`).join("")}
-                </ul>
-              </div>`;
-          }
-
-          document.getElementById("evaluationForm").reset();
-          if (employees.length > 0) {
-            updateEmployeeDisplay(0);
-            swiper.slideTo(0);
-          }
-          btn.innerText = "Submit All";
-          btn.disabled = false;
-        }, 500);
-
-      } catch (e) {
-        alert("Gagal kirim: " + e.message);
-        btn.innerText = "Submit All";
-        btn.disabled = false;
+      if (incomplete.length > 0) {
+        msgBox.innerHTML += `
+          <div class="mt-4 text-left">
+            <p class="text-gray-600 font-semibold">Perhatian, berikut adalah data yg belum lengkap:</p>
+            <ul class="list-disc list-inside text-sm text-gray-700">
+              ${incomplete.map(name => `<li>${name}</li>`).join("")}
+            </ul>
+          </div>`;
       }
-    });
-    
-    document.getElementById("successModal").addEventListener("click", function(e) {
-      if (e.target === this) {
-        this.classList.add("hidden");
-      }
-    });
 
-    window.onload = getDataJSONP;
-  </script>
-</body>
-</html>
+      document.getElementById("evaluationForm").reset();
+      if (employees.length > 0) {
+        updateEmployeeDisplay(0);
+        swiper.slideTo(0);
+      }
+      btn.innerText = "Submit All";
+      btn.disabled = false;
+    }, 500);
+
+  } catch (e) {
+    alert("Gagal kirim: " + e.message);
+    btn.innerText = "Submit All";
+    btn.disabled = false;
+  }
+});
+
