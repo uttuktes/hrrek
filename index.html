@@ -290,7 +290,7 @@
           if (incomplete.length > 0) {
             msgBox.innerHTML += `
               <div class="mt-4 text-left">
-                <p class="text-blue-600 font-semibold underline decoration-red-500">Perhatian, berikut data yang belum lengkap:</p>
+                <p class="text-blue-600 font-semibold underline decoration-solid">Perhatian, ada data yang belum lengkap, sebagai berikut:</p>
                 <ul class="list-disc list-inside text-sm text-gray-700">
                   ${incomplete.map(name => `<li>${name}</li>`).join("")}
                 </ul>
@@ -323,5 +323,6 @@
   </script>
 </body>
 </html>
+
 
 
