@@ -34,18 +34,31 @@
       background: #fff;
       cursor: pointer;
     }
-    .rating-oval input[type="radio"] {
-      display: none;
-    }
+    .rating-oval input[type="radio"] { display: none; }
     .rating-oval input[type="radio"]:checked + span {
       background-color: #2563eb;
       color: white;
       border-radius: 50%;
       display: flex;
-      width: 100%;
-      height: 100%;
-      align-items: center;
-      justify-content: center;
+      width: 100%; height: 100%;
+      align-items: center; justify-content: center;
+    }
+    #fixedSubmitBtn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #2563eb;
+      color: white;
+      padding: 12px 20px;
+      border-radius: 9999px;
+      font-weight: bold;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+      z-index: 100;
+      display: none;
+    }
+    #fixedSubmitBtn:disabled {
+      background: #9ca3af;
+      cursor: not-allowed;
     }
   </style>
 </head>
@@ -76,12 +89,16 @@
 
       <div>
         <label class="block font-semibold">Departemen</label>
-        <input id="department" name="department" type="text" class="mt-1 block w-full px-3 py-2 border rounded-md bg-gray-100 text-black" readonly>
+        <input id="department" name="department" type="text"
+               class="mt-1 block w-full px-3 py-2 border rounded-md bg-gray-100 text-black" readonly>
       </div>
+
+      <div id="loadingMsg" class="hidden text-center text-blue-600 font-semibold">Loading data...</div>
 
       <div id="employeeNameContainer" class="mt-4 hidden">
         <label class="block font-semibold">Nama Karyawan</label>
-        <input id="employeeNameBox" type="text" class="mt-1 block w-full px-3 py-2 border rounded-md bg-gray-100" readonly>
+        <input id="employeeNameBox" type="text"
+               class="mt-1 block w-full px-3 py-2 border rounded-md bg-gray-100" readonly>
         <div class="text-sm text-gray-600 text-center mt-1" id="progressText">(1 / 1)</div>
       </div>
 
@@ -91,12 +108,6 @@
           <div class="swiper-button-prev"></div>
           <div class="swiper-button-next"></div>
           <div class="swiper-pagination"></div>
-        </div>
-
-        <div class="text-center mt-4">
-          <button id="submitAllBtn" type="button" class="bg-blue-600 text-white px-6 py-2 rounded hidden">
-            Submit All
-          </button>
         </div>
       </div>
     </form>
@@ -109,6 +120,8 @@
     </div>
   </div>
 
+   <button id="fixedSubmitBtn">Submit All</button>
+
   <script>
     const API_URL = "https://script.google.com/macros/s/AKfycbxXt1Yrm2cnfJ_JbFM8rlDA8vWR2lSMksXnitV04dC-co7Mct9jrkhgv51pWF6wx8ex/exec";
     let formData = {};
@@ -118,23 +131,25 @@
     const QUESTIONS = [
       "Disiplin dalam melakukan pekerjaan sesuai instruksi kerja yang ada",
       "Trampil dalam mengerjakan tugas",
-      "Sigap dalam menjalankan pekerjaan saya",
-      "Tidak banyak mengobrol dalam jam kerja / membuang-buang waktu untuk kepentingan di luar pekerjaan",
-      "Siap dan Mampu bekerjasama dengan rekan sekerja",
-      "Dalam bekerja, siap melaksanakan perintah atasan (misal: siap bila ditugaskan lembur dan perintah lain terkait pekerjaan)",
-      "Menjaga kebersihan mesin dan atau lingkungan kerja (termasuk tidak makan / minum di area lingkungan kerjanya)",
+      "Sigap dalam menjalankan pekerjaan",
+      "Tidak banyak mengobrol dalam jam kerja / membuang waktu",
+      "Siap dan mampu bekerjasama dengan rekan kerja",
+      "Siap melaksanakan perintah atasan (termasuk lembur)",
+      "Menjaga kebersihan mesin/lingkungan kerja",
       "Memahami bahwa bekerja adalah juga ibadah"
     ];
 
     function loadData(data) {
-      formData = data;
-      const mgrSel = document.getElementById("manager");
-      mgrSel.innerHTML = "<option value=''>Pilih Penilai</option>";
-      Object.keys(data).forEach(m => {
-        mgrSel.innerHTML += `<option value="${m}">${m}</option>`;
-      });
-      mgrSel.disabled = false;
-    }
+	  formData = data;
+	  const mgrSel = document.getElementById("manager");
+	  mgrSel.innerHTML = "<option value=''>Pilih Penilai</option>";
+	  const managers = Object.keys(data).sort((a, b) => a.localeCompare(b, 'id', { sensitivity: 'base' }));
+	  managers.forEach(m => {
+		mgrSel.innerHTML += `<option value="${m}">${m}</option>`;
+	  });
+
+	  mgrSel.disabled = false;
+	}
 
     function getDataJSONP() {
       const script = document.createElement("script");
@@ -148,13 +163,13 @@
       deptInput.value = "";
       document.getElementById("employeeSlides").classList.add("hidden");
       document.getElementById("employeeNameContainer").classList.add("hidden");
+      document.getElementById("loadingMsg").classList.remove("hidden");
 
       if (mgr && formData[mgr]) {
         const depts = Object.keys(formData[mgr]);
         if (depts.length > 0) {
           const firstDept = depts[0];
           deptInput.value = firstDept;
-
           employees = formData[mgr][firstDept];
 
           const periode = document.querySelector("select[name='periode']").value;
@@ -171,14 +186,12 @@
           generateSlides(employees, doneList);
         }
       }
+      document.getElementById("loadingMsg").classList.add("hidden");
     });
 
     function updateEmployeeDisplay(idx) {
       document.getElementById("employeeNameBox").value = employees[idx] || "";
       document.getElementById("progressText").innerText = `(${idx+1} / ${employees.length})`;
-
-      const submitBtn = document.getElementById('submitAllBtn');
-      if (idx === employees.length - 1) submitBtn.classList.remove('hidden'); else submitBtn.classList.add('hidden');
     }
 
     function generateSlides(employees, doneList=[]) {
@@ -199,131 +212,120 @@
                 <label class="block text-sm mb-1">${qIdx+1}. ${text}</label>
                 <div class="rating-oval">
                   ${[1,2,3,4,5].map(v => `
-                    <label>
-                      <input type="radio" name="me${qIdx+1}_${idx}" value="${v}" required>
-                      <span>${v}</span>
-                    </label>`).join(" ")}
+                    <label><input type="radio" name="me${qIdx+1}_${idx}" value="${v}">
+                    <span>${v}</span></label>`).join(" ")}
                 </div>
-              </div>
-            `).join(" ")}
+              </div>`).join(" ")}
             <p class="font-semibold mb-2 underline">Evaluasi Karyawan :</p>
-            <textarea name="eval_${idx}" rows="3" class="w-full border p-2 mt-2" placeholder="Hal-hal yang perlu diperbaiki terkait tampilan kinerja karyawan . . ."></textarea>
+            <textarea name="eval_${idx}" rows="3" class="w-full border p-2 mt-2"></textarea>
           </div>
         `;
       });
 
       document.getElementById("employeeSlides").classList.remove("hidden");
       document.getElementById("employeeNameContainer").classList.remove("hidden");
-
       updateEmployeeDisplay(0);
 
       if (swiper) swiper.destroy();
       swiper = new Swiper(".swiper", {
         navigation: { nextEl: ".swiper-button-next", prevEl: ".swiper-button-prev" },
         pagination: { el: ".swiper-pagination", clickable: true },
-        on: {
-          slideChange: function() {
-            updateEmployeeDisplay(this.activeIndex);
-          }
-        }
+        on: { slideChange: function() { updateEmployeeDisplay(this.activeIndex); } }
       });
+
+      document.getElementById("fixedSubmitBtn").style.display = "block";
     }
 
-    // === Submit All dengan filter data lengkap ===
-    document.getElementById("submitAllBtn").addEventListener("click", async (e) => {
-      const btn = e.target;
-      btn.innerText = "Loading . . .";
-      btn.disabled = true;
+    async function handleSubmitAll(btn) {
+	  btn.innerText = "Loading...";
+	  btn.disabled = true;
 
-      const periode = document.querySelector("select[name='periode']").value;
-      const manager = document.getElementById("manager").value;
-      const department = document.getElementById("department").value;
+	  const periode = document.querySelector("select[name='periode']").value;
+	  const manager = document.getElementById("manager").value;
+	  const department = document.getElementById("department").value;
 
-      let incomplete = [];
-      let completeData = [];
+	  let completeData = [];
+	  let incomplete = [];
 
-      employees.forEach((emp, idx) => {
-        let answers = {};
-        let isComplete = true;
 
-        for (let q=1; q<=QUESTIONS.length; q++) {
-          const val = document.querySelector(`input[name='me${q}_${idx}']:checked`)?.value || "";
-          if (!val) isComplete = false;
-          answers[`me${q}`] = val;
-        }
+	  let doneList = [];
+	  try {
+		const statusUrl = API_URL + `?action=status&period=${encodeURIComponent(periode)}&manager=${encodeURIComponent(manager)}&department=${encodeURIComponent(department)}`;
+		const res = await fetch(statusUrl);
+		const data = await res.json();
+		doneList = data.done || [];
+	  } catch (err) {
+		console.error("Gagal ambil status", err);
+	  }
 
-        const evalText = document.querySelector(`textarea[name='eval_${idx}']`).value;
-        if (!evalText) isComplete = false;
-        if (!periode) isComplete = false;
+	  employees.forEach((emp, idx) => {
+		if (doneList.includes(emp)) return;
 
-        if (isComplete) {
-          completeData.push({
-            periode, manager, department, employee: emp,
-            ...answers,
-            eval: evalText
-          });
-        } else {
-          incomplete.push(emp);
-        }
-      });
+		let answers = {};
+		let isComplete = true;
 
-      try {
-        if (completeData.length > 0) {
-          await fetch(API_URL, {
-            method: "POST",
-            body: JSON.stringify(completeData),
-            headers: { "Content-Type": "application/json" },
-            mode: "no-cors"
-          });
-        }
+		for (let q=1; q<=QUESTIONS.length; q++) {
+		  const val = document.querySelector(`input[name='me${q}_${idx}']:checked`)?.value || "";
+		  if (!val) isComplete = false;
+		  answers[`me${q}`] = val;
+		}
+		const evalText = document.querySelector(`textarea[name='eval_${idx}']`).value;
+		if (!evalText) isComplete = false;
+		if (!periode) isComplete = false;
 
-        setTimeout(() => {
-          const modal = document.getElementById("successModal");
-          const msgBox = document.getElementById("successContent");
-          modal.classList.remove("hidden");
+		if (isComplete) {
+		  completeData.push({ periode, manager, department, employee: emp, ...answers, eval: evalText });
+		} else {
+		  incomplete.push(emp);
+		}
+	  });
 
-          msgBox.innerHTML = `
-            <h3 class="text-lg font-bold mb-2">Data berhasil dikirim!</h3>
-            <p class="text-gray-600">Terimakasih atas kerjasamanya :D</p>
-          `;
+	  if (completeData.length > 0) {
+		try {
+		  await fetch(API_URL, {
+			method: "POST",
+			body: JSON.stringify(completeData),
+			headers: { "Content-Type": "application/json" },
+			mode: "no-cors"
+		  });
+		} catch (e) {
+		  alert("Gagal kirim: " + e.message);
+		}
+	  }
 
-          if (incomplete.length > 0) {
-            msgBox.innerHTML += `
-              <div class="mt-4 text-left">
-                <p class="text-blue-600 font-semibold underline decoration-solid">Perhatian, berikut ada data yang belum lengkap:</p>
-                <ul class="list-disc list-inside text-sm text-gray-700">
-                  ${incomplete.map(name => `<li>${name}</li>`).join("")}
-                </ul>
-              </div>`;
-          }
+	  setTimeout(() => {
+		const modal = document.getElementById("successModal");
+		const content = document.getElementById("successContent");
 
-          document.getElementById("evaluationForm").reset();
-          if (employees.length > 0) {
-            updateEmployeeDisplay(0);
-            swiper.slideTo(0);
-          }
-          btn.innerText = "Submit All";
-          btn.disabled = false;
-        }, 500);
+		content.innerHTML = `
+		  <h3 class="text-lg font-bold mb-2">Data berhasil dikirim!</h3>
+		  <p class="text-gray-600">Terimakasih atas kerjasamanya :D</p>
+		`;
 
-      } catch (e) {
-        alert("Gagal kirim: " + e.message);
-        btn.innerText = "Submit All";
-        btn.disabled = false;
-      }
-    });
-    
+		if (incomplete.length > 0) {
+		  content.innerHTML += `
+			<div class="mt-4 text-left">
+			  <p class="text-blue-600 font-semibold underline">Cek, berikut adalah data yg belum lengkap:</p>
+			  <ul class="list-disc list-inside text-black-500">
+				${incomplete.map(n => `<li>${n}</li>`).join("")}
+			  </ul>
+			</div>
+		  `;
+		}
+
+		modal.classList.remove("hidden");
+		btn.innerText = "Submit All";
+		btn.disabled = false;
+	  }, 500);
+	}
+
+
+    document.getElementById("fixedSubmitBtn").onclick = () => handleSubmitAll(document.getElementById("fixedSubmitBtn"));
     document.getElementById("successModal").addEventListener("click", function(e) {
-      if (e.target === this) {
-        this.classList.add("hidden");
-      }
+      if (e.target === this) this.classList.add("hidden");
     });
 
     window.onload = getDataJSONP;
   </script>
 </body>
 </html>
-
-
-
-
